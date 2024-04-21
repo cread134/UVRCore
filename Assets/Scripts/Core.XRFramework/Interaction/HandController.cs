@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Core.XRFramework
+namespace Core.XRFramework.Interaction
 {
     public enum HandType
     {
@@ -14,7 +14,7 @@ namespace Core.XRFramework
 
     public class HandController : MonoBehaviour
     {
-        [SerializeField] private HandType _handType;
+        [SerializeField] HandType _handType;
         public HandType HandType => _handType;
 
         private void Awake()
@@ -28,62 +28,97 @@ namespace Core.XRFramework
         [SerializeField][Range(0, 1)] private float _gripThreshold = 0.5f;
         [SerializeField][Range(0, 1)] private float _triggerThreshold = 0.5f;
 
-        float _gripValue;
-        float _triggerValue;
-        bool _gripPressed;
-        bool _triggerPressed;
-
         public EventHandler<float> OnGripChangeEvent { get; set; }
         public EventHandler<float> OnTriggerChangeEvent { get; set; }
         public EventHandler OnGripPress { get; set; }
         public EventHandler OnGripRelease { get; set; }
         public EventHandler OnTriggerPress { get; set; }
         public EventHandler OnTriggerRelease { get; set; }
-        public float GripValue => _gripValue;
-        public float TriggerValue => _triggerValue;
-        public bool GripPressed => _gripPressed;
-        public bool TriggerPressed => _triggerPressed;
+
+        float _gripValue;
+        public float GripValue
+        {
+            get {
+                return _gripValue;
+            }
+            set {
+                OnGripChange(value);
+            }
+        }
+
+        float _triggerValue;
+        public float TriggerValue 
+        {
+            get
+            {
+                return _triggerValue;
+            }
+            set
+            {
+                OnTriggerChange(value);
+            }
+        }
+        public bool GripPressed { get; set; }
+        public bool TriggerPressed { get; set; }
 
         void OnGripChange()
         {
             float newValue = _gripAction.action.ReadValue<float>();
+            OnGripChange(newValue);
+        }
+
+        void OnGripChange(float newValue)
+        {
             if (_gripValue < _gripThreshold && newValue >= _gripThreshold)
             {
-                _gripPressed = true;
+                GripPressed = true;
                 OnGripPress?.Invoke(this, EventArgs.Empty);
             }
-            else if (_gripValue >= _gripThreshold && newValue < _gripThreshold)
+            else if (GripValue >= _gripThreshold && newValue < _gripThreshold)
             {
-                _gripPressed = false;
+                GripPressed = false;
                 OnGripRelease?.Invoke(this, EventArgs.Empty);
             }
             _gripValue = newValue;
-            OnGripChangeEvent?.Invoke(this, _gripValue);
+            OnGripChangeEvent?.Invoke(this, GripValue);
         }
 
         void OnTriggerChange()
         {
             float newValue = _triggerAction.action.ReadValue<float>();
-            if (_triggerValue < _triggerThreshold && newValue >= _triggerThreshold)
+            OnTriggerChange(newValue);
+        }
+
+        void OnTriggerChange(float newValue)
+        {
+            if (TriggerValue < _triggerThreshold && newValue >= _triggerThreshold)
             {
-                _triggerPressed = true;
+                TriggerPressed = true;
                 OnTriggerPress?.Invoke(this, EventArgs.Empty);
             }
             else if (_triggerValue >= _triggerThreshold && newValue < _triggerThreshold)
             {
-                _triggerPressed = false;
+                TriggerPressed = false;
                 OnTriggerRelease?.Invoke(this, EventArgs.Empty);
             }
             _triggerValue = newValue;
-            OnTriggerChangeEvent?.Invoke(this, _triggerValue);
+            OnTriggerChangeEvent?.Invoke(this, TriggerValue);
         }
-
         void RegisterInputEvents()
         {
             _gripAction.action.performed += ctx => OnGripChange();
             _gripAction.action.canceled += ctx => OnGripChange();
             _triggerAction.action.performed += ctx => OnTriggerChange();
             _triggerAction.action.canceled += ctx => OnTriggerChange();
+        }
+
+        public void OnMainButtonDown()
+        {
+            Debug.Log($"{HandType} Main Button Down");
+        }
+        public void OnSecondaryButtonDown()
+        {
+            Debug.Log($"{HandType} Secondary Button Down");
         }
         #endregion
     }

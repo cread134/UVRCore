@@ -1,10 +1,7 @@
 {
-    "name": "Core.XRFramework",
-    "rootNamespace": "Core.XRFramework",
-    "references": [
-        "Unity.InputSystem",
-        "Core.Service"
-    ],
+    "name": "Core.Service",
+    "rootNamespace": "Core.Service",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
