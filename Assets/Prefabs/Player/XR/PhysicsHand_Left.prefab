@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3916243088271912531}
   - component: {fileID: 8186140727221657313}
   - component: {fileID: 8291266144818668198}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PhysicsHand_Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3250251870175826197}
   - component: {fileID: 6771130484689746171}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,7 +143,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7318168898066096252}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: InteractionPoint_Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,9 +213,69 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1117701767908683838, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1989320831580619367, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2526047327158584963, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3041507661743437773, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3760371864986282441, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4788393013635174448, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4985579391228023931, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5097903215504375563, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
       propertyPath: m_Name
       value: Controller_Left_Physics_Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 5097903215504375563, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6060871561899047849, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6846151187391919102, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6875420764575215846, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6930864801351620982, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7307186034848508964, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7430386020788531571, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8120325532359882973, guid: 12378953cbff2104e8931fb155677d7f, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

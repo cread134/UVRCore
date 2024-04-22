@@ -12,6 +12,7 @@ namespace Core.XRFramework.Interaction
         Right
     }
 
+    [SelectionBase]
     public class HandController : MonoBehaviour
     {
         [SerializeField] HandType _handType;

@@ -9,9 +9,6 @@ namespace Core.XRFramework.Physics
         private readonly XrObjectPhysicsConfig physicsConfiguration;
         private readonly Rigidbody _rigidbody;
 
-        Vector3 positionError;
-        Vector3 lastPositionError;
-
         public PhysicsMover(XrObjectPhysicsConfig physicsConfiguration, Rigidbody rigidbody)
         {
             this.physicsConfiguration = physicsConfiguration;
@@ -26,64 +23,33 @@ namespace Core.XRFramework.Physics
 
         public void PhysicsMatchPosition(Vector3 targetPosition)
         {
-            positionError = targetPosition - _rigidbody.position;
-
-            Vector3 positionProportion = positionError * physicsConfiguration.positionIntegrationCompenstation;
-
-            Vector3 derivativeGain = (positionError - lastPositionError) / Time.fixedDeltaTime;
-            Vector3 positionDerivative = derivativeGain * physicsConfiguration.positionSmoothing;
-
-            lastPositionError = positionError;
-
-            Vector3 force = positionProportion + positionDerivative;
-            _rigidbody.AddForce(force, ForceMode.Acceleration);
+            Vector3 moveToHandVec = targetPosition - _rigidbody.transform.position;
+            float neededSpeed = moveToHandVec.magnitude * (1.0f / Time.fixedDeltaTime);
+            Vector3 neededSpeedVec = moveToHandVec.normalized * neededSpeed;
+            Vector3 currentSpeedVec = _rigidbody.velocity;
+            Vector3 newSpeedVec = neededSpeedVec - currentSpeedVec;
+            _rigidbody.AddForce(newSpeedVec, ForceMode.VelocityChange);
         }
 
-        private Quaternion rotationError;
-        private Quaternion lastRotation;
-        private Quaternion lastRotationError;
-        private float angleError;
-        private Vector3 errorAxis;
         public void PhysicsMatchRotation(Quaternion targetRotation)
         {
-            rotationError = targetRotation * Quaternion.Inverse(_rigidbody.rotation);
+            Quaternion rotationChange = targetRotation * Quaternion.Inverse(_rigidbody.rotation);
 
-            rotationError.ToAngleAxis(out angleError, out errorAxis);
-            errorAxis.Normalize();
-            if (angleError > 180f)
+            rotationChange.ToAngleAxis(out float angle, out Vector3 axis);
+            if (angle > 180f)
+                angle -= 360f;
+
+            if (Mathf.Approximately(angle, 0))
             {
-                angleError -= 360f;
+                _rigidbody.angularVelocity = Vector3.zero;
+                return;
             }
 
-            Quaternion rotationImpulse = lastRotationError * Quaternion.Inverse(lastRotationError);
-            rotationImpulse.ToAngleAxis(out float angleImpluse, out Vector3 impulseAxis);
-
-            if (angleImpluse > 180f)
-            {
-                angleImpluse -= 360f;
-            }
-
-            Quaternion targetRotationImpulse = targetRotation * Quaternion.Inverse(lastRotation);
-            targetRotationImpulse.ToAngleAxis(out float targetImpulseAngle, out Vector3 targetImpulseVector);
-
-            if (targetImpulseAngle > 180f)
-            {
-                targetImpulseAngle -= 360f;
-            }
-
-            _rigidbody.angularVelocity *= physicsConfiguration.anglularSlowdown;
-
-            Vector3 angularVelocity = (errorAxis * angleError) * Time.deltaTime * physicsConfiguration.rotationErrorCompenstation;
-            Vector3 angularImpulse = ((impulseAxis * angleImpluse) / Time.fixedDeltaTime) * physicsConfiguration.rotationImpulseCompensation;
-            Vector3 targetAngularImpulse = ((targetImpulseAngle * targetImpulseVector) * Time.fixedDeltaTime) * physicsConfiguration.rotationIntergral;
-
-            angularVelocity += (_rigidbody.angularVelocity - angularVelocity) * physicsConfiguration.rotationProportionalGain * Time.deltaTime;
-            angularVelocity += angularImpulse;
-            angularVelocity += targetAngularImpulse;
-            _rigidbody.AddTorque(angularVelocity, ForceMode.VelocityChange);
-
-            lastRotation = targetRotation;
-            lastRotationError = rotationError;
+            angle *= Mathf.Deg2Rad;
+            var targetAngularVelocity = axis * angle / Time.deltaTime;
+            float catchUp = 1.0f;
+            targetAngularVelocity *= catchUp;
+            _rigidbody.AddTorque(targetAngularVelocity - _rigidbody.angularVelocity, ForceMode.VelocityChange);
         }
     }
 }
