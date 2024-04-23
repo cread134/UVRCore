@@ -79,6 +79,7 @@ MonoBehaviour:
   handController: {fileID: 0}
   physicsConfig: {fileID: 11400000, guid: 0cbb06f63052d2e45b05faf66c0a0474, type: 2}
   interactionPoint: {fileID: 7318168898066096252}
+  interactionConfiguration: {fileID: 11400000, guid: f9a7942faa4441c4e8a939000f3a290c, type: 2}
 --- !u!1 &4450416296640651553
 GameObject:
   m_ObjectHideFlags: 0

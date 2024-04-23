@@ -75,7 +75,7 @@ namespace Core.XRFramework.Interaction
                 GripPressed = true;
                 OnGripPress?.Invoke(this, EventArgs.Empty);
             }
-            else if (GripValue >= _gripThreshold && newValue < _gripThreshold)
+            else if (GripValue >= _gripThreshold && newValue < _gripThreshold - 0.1f)
             {
                 GripPressed = false;
                 OnGripRelease?.Invoke(this, EventArgs.Empty);
