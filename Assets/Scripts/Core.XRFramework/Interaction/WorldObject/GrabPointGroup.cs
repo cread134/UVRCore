@@ -9,12 +9,8 @@ namespace Core.XRFramework.Interaction.WorldObject
     public class GrabPointGroup : MonoBehaviour
     {
         #region GrabPoints
-        private void Awake()
-        {
-            grabPoints = GetComponentsInChildren<GrabPoint>();
-        }
 
-        public GrabPoint[] GrabPoints => grabPoints;
+        public GrabPoint[] GrabPoints => grabPoints ??= GetComponentsInChildren<GrabPoint>();
         GrabPoint[] grabPoints;
         GrabPoint[] fLeftHandGrabPoints;
         GrabPoint[] fRightHandGrabPoints;

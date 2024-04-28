@@ -12,15 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afb489804eba80443ae0d423c38755f5, type: 3}
   m_Name: DefaultObjectPhysicsConfig
   m_EditorClassIdentifier: 
-  positionSmoothing: 7
-  positionVelocityMultipler: 1
-  positionProportion: 3
-  positionalImpulse: 7
-  rotationProportionalGain: 12
-  torqueDamping: 2
-  rotationErrorCompenstation: 10
-  angleAllowance: 4
-  rotationalSmoothing: 13
-  rotationImpulseCompensation: 2
-  rotationIntergral: 3
-  anglularSlowdown: 0.6
+  maxAngularVelocity: 20
+  torqueSmoothing: 7
+  rotationalMultiplier: 1

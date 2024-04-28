@@ -89,7 +89,7 @@ namespace Core.XRFramework.Interaction.WorldObject
 
             var calculatedTargetPosition = CalculatePositionalTarget(targetPosition, getTransform.newPosition);
             var calculatedRotation = CalculateRotationalTarget(targetRotation, getTransform.newRotation);
-            _physicsObject.PhysicsRigidbody.centerOfMass = _physicsObject.PhysicsRigidbody.transform.InverseTransformPoint(calculatedTargetPosition);
+            _physicsObject.PhysicsRigidbody.centerOfMass = _physicsObject.PhysicsRigidbody.transform.InverseTransformPoint(getTransform.newPosition);
 
             PhysicsMover?.MatchTransform(calculatedTargetPosition, calculatedRotation);
         }

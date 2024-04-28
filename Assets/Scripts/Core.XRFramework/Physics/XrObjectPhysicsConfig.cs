@@ -7,8 +7,8 @@ namespace Core.XRFramework.Physics
     [CreateAssetMenu]
     public class XrObjectPhysicsConfig : ScriptableObject
     {
-        public float velocitySmoothing = 7f;
+        public float maxAngularVelocity = 100f;
         public float torqueSmoothing = 7f;
-        public float rotationalDelta = 4f;
+        public float rotationalMultiplier = 1.5f;
     }
 }
