@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Core.XRFramework.Physics
 {
@@ -59,14 +60,8 @@ namespace Core.XRFramework.Physics
             }
 
             angle *= Mathf.Deg2Rad;
-
-            var targetAngularVelocity = (axis * angle) / Time.deltaTime;
-
-            float catchUp = (angle / 180f) * 10f;
-            targetAngularVelocity *= physicsConfiguration.rotationalMultiplier;
-            var target = targetAngularVelocity - _rigidbody.angularVelocity;
-            Vector3.SmoothDamp(_rigidbody.angularVelocity, targetAngularVelocity, ref target, (physicsConfiguration.torqueSmoothing * 0.1f));
-            _rigidbody.AddTorque(target, ForceMode.VelocityChange);
+            _rigidbody.angularVelocity = (axis * angle / Time.fixedDeltaTime);
+            Debug.DrawLine(_rigidbody.position, _rigidbody.position + (_rigidbody.angularVelocity * 0.01f), Color.red);
         }
     }
 }

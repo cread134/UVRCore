@@ -89,7 +89,6 @@ namespace Core.XRFramework.Interaction.WorldObject
 
             var calculatedTargetPosition = CalculatePositionalTarget(targetPosition, getTransform.newPosition);
             var calculatedRotation = CalculateRotationalTarget(targetRotation, getTransform.newRotation);
-            _physicsObject.PhysicsRigidbody.centerOfMass = _physicsObject.PhysicsRigidbody.transform.InverseTransformPoint(getTransform.newPosition);
 
             PhysicsMover?.MatchTransform(calculatedTargetPosition, calculatedRotation);
         }
@@ -111,7 +110,8 @@ namespace Core.XRFramework.Interaction.WorldObject
         {
             _primaryGrabType = handType;
             TryGetGrab(handType, referencePosition, referenceRotation, out Vector3 newPosition, out Quaternion newRotation);
-            _physicsObject.PhysicsRigidbody.useGravity = false; 
+            _physicsObject.PhysicsRigidbody.useGravity = false;
+            _physicsObject.PhysicsRigidbody.centerOfMass = newPosition - _physicsObject.PhysicsRigidbody.position;
         }
 
         public void OnRelease(HandType handType, Vector3 referencePosition, Quaternion referenceRotation)
@@ -120,7 +120,7 @@ namespace Core.XRFramework.Interaction.WorldObject
             if (IsTwoHanded)
             {
                 _primaryGrabType = oppositeType;
-                _physicsObject.PhysicsRigidbody.centerOfMass = _physicsObject.PhysicsRigidbody.transform.InverseTransformPoint(storedHandInformation[oppositeType].GetGrabTransform(referencePosition, referenceRotation).newPosition);
+                _physicsObject.PhysicsRigidbody.centerOfMass = storedHandInformation[oppositeType].GetGrabTransform(referencePosition, referenceRotation).newPosition - _physicsObject.PhysicsRigidbody.position;
             }
             _physicsObject.PhysicsRigidbody.useGravity = true;
             storedHandInformation[handType] = null;

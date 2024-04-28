@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAngularVelocity: 20
   torqueSmoothing: 7
-  rotationalMultiplier: 1
+  rotationalMultiplier: 0.3
