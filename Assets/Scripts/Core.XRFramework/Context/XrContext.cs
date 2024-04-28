@@ -22,5 +22,10 @@ namespace Core.XRFramework.Context
         {
             return side == HandType.Left ? leftHandController : rightHandController;
         }
+
+        public Camera GetCamera()
+        {
+            return Camera.main;
+        }
     }
 }

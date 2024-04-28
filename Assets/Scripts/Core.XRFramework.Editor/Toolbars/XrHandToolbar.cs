@@ -40,7 +40,8 @@ namespace Core.XrFramework.Toolbars
 
             var controller = context.GetController(HandType);
             var controlsOpen = rightOpen;
-            Action accessAction = AccessRightHand;
+            Action accessAction = () => AccessRightHand(false);
+            Action accessFrame = () => AccessRightHand(true);
             Action mainButtonAction = OnRightMainButton;
             Action secondaryButtonAction = OnRightSecondaryButton;
             EventCallback<ChangeEvent<float>> gripAction = OnRightGripChange;
@@ -48,7 +49,8 @@ namespace Core.XrFramework.Toolbars
             if (HandType == HandType.Left)
             {
                 controlsOpen = leftOpen;
-                accessAction = AccessLeftHand;
+                accessAction = () => AccessLeftHand(false);
+                accessFrame = () => AccessLeftHand(true);
                 mainButtonAction = OnLeftMainButton;
                 secondaryButtonAction = OnLeftSecondaryButton;
                 gripAction = OnLeftGripChange;
@@ -59,6 +61,7 @@ namespace Core.XrFramework.Toolbars
             horizontalBox.style.alignContent = Align.FlexStart;
             horizontalBox.style.flexDirection = FlexDirection.Row;
             horizontalBox.AddButton($"{HandType}Hand", accessAction);
+            horizontalBox.AddButton($"{HandType}Hand_Frame", accessFrame);
             var controlsButton = horizontalBox.AddButton("Ctrl", () =>
             {
                 if (HandType == HandType.Right)
@@ -146,17 +149,20 @@ namespace Core.XrFramework.Toolbars
         }
         #endregion
 
-        void AccessRightHand() => AccessHandCore(HandType.Right);
-        void AccessLeftHand() => AccessHandCore(HandType.Left);
+        void AccessRightHand(bool frameObject) => AccessHandCore(HandType.Right, frameObject);
+        void AccessLeftHand(bool frameObject) => AccessHandCore(HandType.Left, frameObject);
 
-        void AccessHandCore(HandType HandType)
+        void AccessHandCore(HandType HandType, bool frameObject)
         {
             var context = GameObject.FindFirstObjectByType<XrContext>();
             var hand = context?.GetController(HandType);
             if (hand != null)
             {
                 Selection.activeTransform = hand.transform;
-                SceneView.lastActiveSceneView.FrameSelected();
+                if (frameObject)
+                {
+                    SceneView.lastActiveSceneView.FrameSelected();
+                }
             }
 
             CreatePanelContent();

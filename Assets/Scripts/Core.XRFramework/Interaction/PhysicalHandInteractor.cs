@@ -1,3 +1,4 @@
+using Core.XRFramework.Context;
 using Core.XRFramework.Interaction.WorldObject;
 using Core.XRFramework.Physics;
 using System;
@@ -16,16 +17,39 @@ namespace Core.XRFramework.Interaction
         [SerializeField] HandController handController;
 
         [Header("Hand Interactor Settings")]
+        [SerializeField] GrabInteractionIcon grabIndicator;
         [SerializeField] Transform interactionPoint;
         [SerializeField] CommonPhysicsInteractorConfig interactionConfiguration;
 
-        Collider[] Colliders => fColliders ??= GetComponentsInChildren<Collider>();
-        Collider[] fColliders;
+        GameObject[] LayerObjects
+        {
+            get
+            {
+                if (fLayerObjects == null)
+                {
+                    var foundGameObjects = new HashSet<GameObject>();
+                    var colliders = GetComponentsInChildren<Collider>();
+                    foreach (var collider in colliders)
+                    {
+                        foundGameObjects.Add(collider.gameObject);
+                    }
+                    fLayerObjects = foundGameObjects.ToArray();
+                }
+                return fLayerObjects;
+            }
+        }
+
+        GameObject[] fLayerObjects;
         PhysicsMover _physicsMover;
         Rigidbody _rigidbody;
+        XrContext _xrContext;
+        Camera _camera;
 
         private void Awake()
         {
+            _xrContext = FindObjectOfType<XrContext>() ?? throw new Exception("No XR Context found in scene");
+            _camera = _xrContext.GetCamera();
+
             _rigidbody = GetComponent<Rigidbody>();
             _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
             _rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -34,20 +58,75 @@ namespace Core.XRFramework.Interaction
 
             handController.OnGripPress += OnGripPress;
             handController.OnGripRelease += OnGripRelease;
+
+            grabIndicator.SetActive(false);
         }
         #region grabbing
         IGrabbableObject hoveredObject;
         IGrabbableObject grabbedObject;
-        bool fIsGrabbingObject;
-        bool IsGrabbingObject => fIsGrabbingObject && grabbedObject != null;
+        bool _isGrabbingObject;
+        bool IsGrabbingObject => _isGrabbingObject && grabbedObject != null;
+        bool CanGrabObject => hoveredObject != null && hoveredObject.CanGrab();
+
         RaycastHit[] hoverBuffer = new RaycastHit[3];
 
+        #region input
         private void OnGripRelease(object sender, EventArgs e)
         {
+            TryRelease();
         }
 
         private void OnGripPress(object sender, EventArgs e)
         {
+            TryGrab();
+        }
+        #endregion
+
+        public void TryGrab()
+        {
+            if (!IsGrabbingObject && CanGrabObject)
+            {
+                GrabObject();
+            }
+        }
+
+        public void TryRelease()
+        {
+            if (IsGrabbingObject)
+            {
+                ReleaseObject();
+            }
+        }
+
+        private void GrabObject()
+        {
+            grabbedObject = hoveredObject;
+            hoveredObject = null;
+            _isGrabbingObject = true;
+            grabbedObject.OnGrab(interactionPoint.position, _rigidbody.rotation);
+            _rigidbody.isKinematic = true;
+            grabIndicator.SetActive(false);
+            SetCollisionActive(false);
+        }
+
+        private void ReleaseObject()
+        {
+            _isGrabbingObject = false;
+            grabbedObject.OnRelease(interactionPoint.position, _rigidbody.rotation);
+            _rigidbody.isKinematic = false;
+            grabIndicator.SetActive(false);
+            SetCollisionActive(true);
+            grabbedObject = null;
+            hoveredObject = null;
+        }
+
+        void SetCollisionActive(bool active)
+        {
+            var targetLayer = active ? 7 : 8;
+            foreach (var layerObject in LayerObjects)
+            {
+                layerObject.layer = targetLayer;
+            }
         }
 
         private void UpdateGrabHover()
@@ -68,6 +147,18 @@ namespace Core.XRFramework.Interaction
                 {
                     hoveredObject.OnHoverEnter();
                 }
+
+                if (hoveredObject.TryGetGrab(_rigidbody.position, _rigidbody.rotation, out var newPosition, out var newRotation))
+                {
+                    grabIndicator.SetActive(true);
+                    var lookToCameraDirection = _camera.transform.position - newPosition;
+                    grabIndicator.UpdateTransform(newPosition, _rigidbody.position, Quaternion.LookRotation(lookToCameraDirection, Vector3.up));
+                } 
+                else
+                {
+                    grabIndicator.SetActive(false);
+                    hoveredObject = null;
+                }
             }
             else
             {
@@ -75,6 +166,7 @@ namespace Core.XRFramework.Interaction
                 {
                     hoveredObject.OnHoverExit();
                     hoveredObject = null;
+                    grabIndicator.SetActive(false);
                 }
             }
         }
@@ -93,7 +185,11 @@ namespace Core.XRFramework.Interaction
 
         private void UpdateHelpObjectTransform()
         {
-
+            grabbedObject.UpdateTransform(handController.transform.position, handController.transform.rotation);
+            grabbedObject.GetGrabPosition(handController.transform.position, handController.transform.rotation, out var newPosition, out var newRotation);
+            _rigidbody.MovePosition(newPosition);
+            _rigidbody.MoveRotation(newRotation);
+           
         }
         #endregion
 

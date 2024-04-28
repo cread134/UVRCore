@@ -1,10 +1,9 @@
 fileFormatVersion: 2
-guid: 4ac7ed1d1f304004cae3fc2c6c9928a3
+guid: 43c55afb6e0875c4dab7ff75f081bced
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - physicsConfiguration: {fileID: 11400000, guid: 0cbb06f63052d2e45b05faf66c0a0474, type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

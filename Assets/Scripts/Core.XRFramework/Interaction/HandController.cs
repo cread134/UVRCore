@@ -59,8 +59,8 @@ namespace Core.XRFramework.Interaction
                 OnTriggerChange(value);
             }
         }
-        public bool GripPressed { get; set; }
-        public bool TriggerPressed { get; set; }
+        public bool GripPressed { get; set; } = false;
+        public bool TriggerPressed { get; set; } = false;
 
         void OnGripChange()
         {
@@ -70,15 +70,21 @@ namespace Core.XRFramework.Interaction
 
         void OnGripChange(float newValue)
         {
-            if (_gripValue < _gripThreshold && newValue >= _gripThreshold)
+            if (newValue >= _gripThreshold)
             {
+                if (!GripPressed)
+                {
+                    OnGripPress?.Invoke(this, EventArgs.Empty);
+                }
                 GripPressed = true;
-                OnGripPress?.Invoke(this, EventArgs.Empty);
             }
-            else if (GripValue >= _gripThreshold && newValue < _gripThreshold - 0.1f)
+            else if ( newValue < _gripThreshold - 0.1)
             {
+                if (GripPressed)
+                {
+                    OnGripRelease?.Invoke(this, EventArgs.Empty);
+                }
                 GripPressed = false;
-                OnGripRelease?.Invoke(this, EventArgs.Empty);
             }
             _gripValue = newValue;
             OnGripChangeEvent?.Invoke(this, GripValue);

@@ -17,8 +17,14 @@ namespace Core.XRFramework.Physics
 
         public void MatchTransform(Transform targetTransform)
         {
-            PhysicsMatchPosition(targetTransform.position);
-            PhysicsMatchRotation(targetTransform.rotation);
+            MatchTransform(targetTransform.position, targetTransform.rotation);
+        }
+
+
+        public void MatchTransform(Vector3 position, Quaternion rotation)
+        {
+            PhysicsMatchPosition(position);
+            PhysicsMatchRotation(rotation);
         }
 
         public void PhysicsMatchPosition(Vector3 targetPosition)
