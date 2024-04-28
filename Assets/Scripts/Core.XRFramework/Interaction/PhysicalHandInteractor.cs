@@ -62,7 +62,7 @@ namespace Core.XRFramework.Interaction
             grabIndicator.SetActive(false);
         }
         #region grabbing
-        IGrabbableObject hoveredObject;
+        public IGrabbableObject hoveredObject;
         IGrabbableObject grabbedObject;
         bool _isGrabbingObject;
         bool IsGrabbingObject => _isGrabbingObject && grabbedObject != null;
@@ -103,21 +103,26 @@ namespace Core.XRFramework.Interaction
             grabbedObject = hoveredObject;
             hoveredObject = null;
             _isGrabbingObject = true;
-            grabbedObject.OnGrab(interactionPoint.position, _rigidbody.rotation);
+            grabbedObject.OnGrab(handType, interactionPoint.position, _rigidbody.rotation);
             _rigidbody.isKinematic = true;
             grabIndicator.SetActive(false);
             SetCollisionActive(false);
+
+            HapticsService.Instance?.SendHapticsImpulse(handType, interactionConfiguration.hapticGrabAmplitude, interactionConfiguration.hapticGrabDuration);
         }
 
         private void ReleaseObject()
         {
             _isGrabbingObject = false;
-            grabbedObject.OnRelease(interactionPoint.position, _rigidbody.rotation);
+            grabbedObject.OnRelease(handType, interactionPoint.position, _rigidbody.rotation);
             _rigidbody.isKinematic = false;
             grabIndicator.SetActive(false);
             SetCollisionActive(true);
             grabbedObject = null;
             hoveredObject = null;
+            _physicsMover.Reset();
+
+            HapticsService.Instance?.SendHapticsImpulse(handType, interactionConfiguration.hapticGrabAmplitude, interactionConfiguration.hapticGrabDuration);
         }
 
         void SetCollisionActive(bool active)
@@ -148,7 +153,7 @@ namespace Core.XRFramework.Interaction
                     hoveredObject.OnHoverEnter();
                 }
 
-                if (hoveredObject.TryGetGrab(_rigidbody.position, _rigidbody.rotation, out var newPosition, out var newRotation))
+                if (hoveredObject.TryGetGrab(handType, _rigidbody.position, _rigidbody.rotation, out var newPosition, out var newRotation))
                 {
                     grabIndicator.SetActive(true);
                     var lookToCameraDirection = _camera.transform.position - newPosition;
@@ -185,8 +190,8 @@ namespace Core.XRFramework.Interaction
 
         private void UpdateHelpObjectTransform()
         {
-            grabbedObject.UpdateTransform(handController.transform.position, handController.transform.rotation);
-            grabbedObject.GetGrabPosition(handController.transform.position, handController.transform.rotation, out var newPosition, out var newRotation);
+            grabbedObject.UpdateTransform(handType, handController.transform.position, handController.transform.rotation);
+            grabbedObject.GetGrabHandPosition(handType, handController.transform.position, handController.transform.rotation, out var newPosition, out var newRotation);
             _rigidbody.MovePosition(newPosition);
             _rigidbody.MoveRotation(newRotation);
            

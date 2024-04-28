@@ -13,6 +13,15 @@ namespace Core.XRFramework.Physics
         {
             this.physicsConfiguration = physicsConfiguration;
             this._rigidbody = rigidbody;
+            Reset();
+        }
+
+        Quaternion lastRotationChange;
+        Vector3 lastPositionChange;
+        public void Reset()
+        {
+            lastRotationChange = Quaternion.identity;
+            lastPositionChange = Vector3.zero;
         }
 
         public void MatchTransform(Transform targetTransform)
@@ -23,8 +32,8 @@ namespace Core.XRFramework.Physics
 
         public void MatchTransform(Vector3 position, Quaternion rotation)
         {
-            PhysicsMatchPosition(position);
             PhysicsMatchRotation(rotation);
+            PhysicsMatchPosition(position);
         }
 
         public void PhysicsMatchPosition(Vector3 targetPosition)
@@ -40,6 +49,14 @@ namespace Core.XRFramework.Physics
         public void PhysicsMatchRotation(Quaternion targetRotation)
         {
             Quaternion rotationChange = targetRotation * Quaternion.Inverse(_rigidbody.rotation);
+            Quaternion deltaRotation = rotationChange * Quaternion.Inverse(lastRotationChange);
+            lastRotationChange = rotationChange;
+
+            deltaRotation.ToAngleAxis(out float deltaAngle, out Vector3 deltaAxis);
+            deltaAngle *= physicsConfiguration.rotationalDelta;
+
+            if (deltaAngle > 180f)
+                deltaAngle -= 360f;
 
             rotationChange.ToAngleAxis(out float angle, out Vector3 axis);
             if (angle > 180f)
@@ -52,10 +69,15 @@ namespace Core.XRFramework.Physics
             }
 
             angle *= Mathf.Deg2Rad;
-            var targetAngularVelocity = axis * angle / Time.deltaTime;
+            deltaAngle *= Mathf.Deg2Rad;
+
+            var targetAngularVelocity = (axis * angle) / Time.deltaTime;
+
             float catchUp = 1.0f;
             targetAngularVelocity *= catchUp;
-            _rigidbody.AddTorque(targetAngularVelocity - _rigidbody.angularVelocity, ForceMode.VelocityChange);
+            var target = targetAngularVelocity - _rigidbody.angularVelocity;
+            Vector3.SmoothDamp(_rigidbody.angularVelocity, targetAngularVelocity, ref target, (physicsConfiguration.torqueSmoothing * 0.1f));
+            _rigidbody.AddTorque(target, ForceMode.VelocityChange);
         }
     }
 }

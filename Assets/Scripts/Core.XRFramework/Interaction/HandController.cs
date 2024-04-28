@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Core.XRFramework.Interaction
 {
@@ -24,6 +26,7 @@ namespace Core.XRFramework.Interaction
         }
 
         #region Input
+        [SerializeField] private ActionBasedController _xrController;
         [SerializeField] private InputActionReference _gripAction;
         [SerializeField] private InputActionReference _triggerAction;
         [SerializeField][Range(0, 1)] private float _gripThreshold = 0.5f;
@@ -126,6 +129,11 @@ namespace Core.XRFramework.Interaction
         public void OnSecondaryButtonDown()
         {
             Debug.Log($"{HandType} Secondary Button Down");
+        }
+
+        internal void SendHapticsImpulse(float amplitude, float duration)
+        {
+           _xrController.SendHapticImpulse(amplitude, duration);
         }
         #endregion
     }

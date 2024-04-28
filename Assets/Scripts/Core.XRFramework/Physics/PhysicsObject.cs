@@ -13,6 +13,7 @@ namespace Core.XRFramework.Physics
         private void Awake()
         {    
             _rigidbody = GetComponent<Rigidbody>();
+            _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         }
 
         const float MIN_COLLISION_IMPULSE = 0.1f;
@@ -27,5 +28,17 @@ namespace Core.XRFramework.Physics
         public virtual void OnCollide(Collision collision)
         {
         }
+
+        #region Debug
+        private void OnDrawGizmos()
+        {
+            if (_rigidbody != null)
+            {
+                var centreOfMass = transform.TransformPoint(_rigidbody.centerOfMass);
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(centreOfMass, 0.01f);
+            }
+        }
+        #endregion
     }
 }
