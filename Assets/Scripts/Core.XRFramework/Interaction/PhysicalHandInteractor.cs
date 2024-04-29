@@ -190,8 +190,9 @@ namespace Core.XRFramework.Interaction
 
         private void UpdateHelpObjectTransform()
         {
-            grabbedObject.UpdateTransform(handType, handController.transform.position, handController.transform.rotation);
-            grabbedObject.GetGrabHandPosition(handType, handController.transform.position, handController.transform.rotation, out var newPosition, out var newRotation);
+            grabbedObject.UpdateCachedValues(handType, handController.transform.position, handController.transform.rotation);
+            grabbedObject.UpdateTransformState(handType);
+            grabbedObject.GetGrabHandPosition(handType, out var newPosition, out var newRotation);
             _rigidbody.MovePosition(newPosition);
             _rigidbody.MoveRotation(newRotation);
            

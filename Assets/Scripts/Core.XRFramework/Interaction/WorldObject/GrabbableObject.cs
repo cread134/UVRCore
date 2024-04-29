@@ -1,4 +1,5 @@
 using Core.XRFramework.Physics;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,16 +19,15 @@ namespace Core.XRFramework.Interaction.WorldObject
         PhysicsMover PhysicsMover => _physicsMover ??= new PhysicsMover(physicsConfiguration, _physicsObject.PhysicsRigidbody);
         PhysicsMover _physicsMover;
 
-        bool IsTwoHanded => storedHandInformation[HandType.Right] != null && storedHandInformation[HandType.Left] != null;
+        bool IsTwoHanded => storedHandInformation[HandType.Right].IsGrabbing && storedHandInformation[HandType.Left].IsGrabbing;
         HandType _primaryGrabType;
-        Dictionary<HandType, GrabPoint> storedHandInformation = new Dictionary<HandType, GrabPoint>();
-
+        Dictionary<HandType, CachedHandInformation> storedHandInformation = new Dictionary<HandType, CachedHandInformation>();
 
         private void Awake()
         {
             _physicsObject = GetComponent<PhysicsObject>();
-            storedHandInformation.Add(HandType.Left, null);
-            storedHandInformation.Add(HandType.Right, null);
+            storedHandInformation.Add(HandType.Left, new());
+            storedHandInformation.Add(HandType.Right, new());
 
             foreach (var grabPointGroup in grabPointGroups)
             {
@@ -59,7 +59,7 @@ namespace Core.XRFramework.Interaction.WorldObject
                 if (group.TryGetGrabPosition(handType, referencePosition, referenceRotation, out var grabPoint))
                 {
                     var grabTransform = grabPoint.GetGrabTransform(referencePosition, referenceRotation);
-                    storedHandInformation[handType] = grabPoint;
+                    storedHandInformation[handType].GrabPoint = grabPoint;
                     newPosition = grabTransform.newPosition;
                     newRotation = grabTransform.newRotation;
                     return true;
@@ -68,16 +68,16 @@ namespace Core.XRFramework.Interaction.WorldObject
             return false;
         }
 
-        public void GetGrabHandPosition(HandType handType, Vector3 referencePosition, Quaternion referenceRotation, out Vector3 newPosition, out Quaternion newRotation)
+        public void GetGrabHandPosition(HandType handType, out Vector3 newPosition, out Quaternion newRotation)
         {
-            var getTransform = storedHandInformation[handType].GetGrabTransform(referencePosition, referenceRotation);
+            var getTransform = storedHandInformation[handType].GetGrabTransform();
             newPosition = getTransform.newPosition;
             newRotation = getTransform.newRotation;
         }
 
-        public void UpdateTransform(HandType handType, Vector3 targetPosition, Quaternion targetRotation)
+        public void UpdateTransformState(HandType handType)
         {
-            if (storedHandInformation[handType] == null)
+            if (!storedHandInformation[handType].IsGrabbing)
             {
                 return;
             }
@@ -85,12 +85,19 @@ namespace Core.XRFramework.Interaction.WorldObject
             {
                 return;
             }
-            var getTransform = storedHandInformation[handType].GetGrabTransform(targetPosition, targetRotation);
+            var cachedInformation = storedHandInformation[handType];
+            var getTransform = cachedInformation.GetGrabTransform();
 
-            var calculatedTargetPosition = CalculatePositionalTarget(targetPosition, getTransform.newPosition);
-            var calculatedRotation = CalculateRotationalTarget(targetRotation, getTransform.newRotation);
+            var calculatedTargetPosition = CalculatePositionalTarget(cachedInformation.TargetPosition, getTransform.newPosition);
+            var calculatedRotation = CalculateRotationalTarget(cachedInformation.TargetRotation, getTransform.newRotation);
 
             PhysicsMover?.MatchTransform(calculatedTargetPosition, calculatedRotation);
+        }
+
+        public void UpdateCachedValues(HandType handType, Vector3 targetPosition, Quaternion targetRotation)
+        {
+            storedHandInformation[handType].TargetPosition = targetPosition;
+            storedHandInformation[handType].TargetRotation = targetRotation;
         }
 
         Vector3 CalculatePositionalTarget(Vector3 targetPosition, Vector3 referencePosition)
@@ -108,6 +115,7 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         public void OnGrab(HandType handType, Vector3 referencePosition, Quaternion referenceRotation)
         {
+            storedHandInformation[handType].IsGrabbing = true;
             _primaryGrabType = handType;
             TryGetGrab(handType, referencePosition, referenceRotation, out Vector3 newPosition, out Quaternion newRotation);
             _physicsObject.PhysicsRigidbody.useGravity = false;
@@ -120,10 +128,10 @@ namespace Core.XRFramework.Interaction.WorldObject
             if (IsTwoHanded)
             {
                 _primaryGrabType = oppositeType;
-                _physicsObject.PhysicsRigidbody.centerOfMass = storedHandInformation[oppositeType].GetGrabTransform(referencePosition, referenceRotation).newPosition - _physicsObject.PhysicsRigidbody.position;
+                _physicsObject.PhysicsRigidbody.centerOfMass = storedHandInformation[oppositeType].GetGrabTransform().newPosition - _physicsObject.PhysicsRigidbody.position;
             }
             _physicsObject.PhysicsRigidbody.useGravity = true;
-            storedHandInformation[handType] = null;
+            storedHandInformation[handType].IsGrabbing = false;
             _physicsObject.PhysicsRigidbody.ResetCenterOfMass();
             _physicsMover.Reset();
         }

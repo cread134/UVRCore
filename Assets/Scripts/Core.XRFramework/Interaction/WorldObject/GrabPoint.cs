@@ -12,7 +12,7 @@ namespace Core.XRFramework
         public GrabbableObject parent;
         public HandType handType;
         public float maxGrabDistance = 0.05f;
-        public float requiredMatchAngle = 20f;
+        public float requiredMatchAngle = 35f;
         public bool CanGrabPoint(Vector3 referencePosition, Quaternion referenceRotation, out float priority)
         {
             var distance = Vector3.Distance(referencePosition, transform.position);
