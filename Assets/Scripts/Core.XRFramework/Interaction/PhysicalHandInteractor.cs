@@ -136,7 +136,7 @@ namespace Core.XRFramework.Interaction
 
         private void UpdateGrabHover()
         {
-            var nonAllocHits = UnityEngine.Physics.SphereCastNonAlloc(interactionPoint.position, interactionConfiguration.MaxInteractionDistance, interactionPoint.forward, hoverBuffer, interactionConfiguration.MaxInteractionDistance, interactionConfiguration.GrabbableObjectMask.LayerMask, QueryTriggerInteraction.Ignore);
+            var nonAllocHits = UnityEngine.Physics.SphereCastNonAlloc(interactionPoint.position, interactionConfiguration.MaxInteractionDistance, interactionPoint.forward, hoverBuffer, interactionConfiguration.MaxInteractionDistance / 2f, interactionConfiguration.GrabbableObjectMask.LayerMask, QueryTriggerInteraction.Ignore);
             if (nonAllocHits > 0)
             {
                 var closest = hoverBuffer[0];
@@ -151,18 +151,21 @@ namespace Core.XRFramework.Interaction
                 if (hoveredObject != null)
                 {
                     hoveredObject.OnHoverEnter();
-                }
 
-                if (hoveredObject.TryGetGrab(handType, transform.position, transform.up, transform.rotation, out var newPosition, out var newRotation))
-                {
-                    grabIndicator.SetActive(true);
-                    var lookToCameraDirection = _camera.transform.position - newPosition;
-                    grabIndicator.UpdateTransform(newPosition, transform.position, Quaternion.LookRotation(lookToCameraDirection, Vector3.up));
-                } 
+                    if (hoveredObject.TryGetGrab(handType, transform.position, transform.up, transform.rotation, out var newPosition, out var newRotation))
+                    {
+                        grabIndicator.SetActive(true);
+                        var lookToCameraDirection = _camera.transform.position - newPosition;
+                        grabIndicator.UpdateTransform(newPosition, transform.position, Quaternion.LookRotation(lookToCameraDirection, Vector3.up));
+                    } else
+                    {
+                        grabIndicator.SetActive(false);
+                        hoveredObject = null;
+                    }
+                }
                 else
                 {
                     grabIndicator.SetActive(false);
-                    hoveredObject = null;
                 }
             }
             else

@@ -41,10 +41,12 @@ namespace Core.XRFramework
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red;
+            var semiTransparentColor = handType == HandType.Left ? new Color(1, 0, 0, 0.5f) : new Color(0, 0, 1, 0.5f);
+            Gizmos.color = semiTransparentColor;
             Gizmos.DrawWireSphere(transform.position, maxGrabDistance);
             var label = $"{handType} {maxGrabDistance}";
-            Handles.Label(transform.position, label);
+            var labelOffset = new Vector3(0, 0.01f, 0);
+            Handles.Label(transform.position + labelOffset, label);
             Gizmos.DrawIcon(transform.position, "GrabIcon.png", true);
         }
         #endregion
