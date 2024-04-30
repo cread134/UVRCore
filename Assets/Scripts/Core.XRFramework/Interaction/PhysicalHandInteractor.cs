@@ -103,7 +103,7 @@ namespace Core.XRFramework.Interaction
             grabbedObject = hoveredObject;
             hoveredObject = null;
             _isGrabbingObject = true;
-            grabbedObject.OnGrab(handType, interactionPoint.position, _rigidbody.rotation);
+            grabbedObject.OnGrab(handType, interactionPoint.position, interactionPoint.up, _rigidbody.rotation);
             _rigidbody.isKinematic = true;
             grabIndicator.SetActive(false);
             SetCollisionActive(false);
@@ -153,11 +153,11 @@ namespace Core.XRFramework.Interaction
                     hoveredObject.OnHoverEnter();
                 }
 
-                if (hoveredObject.TryGetGrab(handType, _rigidbody.position, _rigidbody.rotation, out var newPosition, out var newRotation))
+                if (hoveredObject.TryGetGrab(handType, transform.position, transform.up, transform.rotation, out var newPosition, out var newRotation))
                 {
                     grabIndicator.SetActive(true);
                     var lookToCameraDirection = _camera.transform.position - newPosition;
-                    grabIndicator.UpdateTransform(newPosition, _rigidbody.position, Quaternion.LookRotation(lookToCameraDirection, Vector3.up));
+                    grabIndicator.UpdateTransform(newPosition, transform.position, Quaternion.LookRotation(lookToCameraDirection, Vector3.up));
                 } 
                 else
                 {
@@ -190,7 +190,7 @@ namespace Core.XRFramework.Interaction
 
         private void UpdateHelpObjectTransform()
         {
-            grabbedObject.UpdateCachedValues(handType, handController.transform.position, handController.transform.rotation);
+            grabbedObject.UpdateCachedValues(handType, handController.transform.position, handController.transform.up, handController.transform.rotation);
             grabbedObject.UpdateTransformState(handType);
             grabbedObject.GetGrabHandPosition(handType, out var newPosition, out var newRotation);
             _rigidbody.MovePosition(newPosition);

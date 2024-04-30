@@ -9,11 +9,13 @@ namespace Core.XRFramework.Physics
     {
         Rigidbody _rigidbody;
         public Rigidbody PhysicsRigidbody => _rigidbody;
+        public float Mass = 1f;
 
         private void Awake()
         {    
             _rigidbody = GetComponent<Rigidbody>();
             _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+            _rigidbody.mass = Mass;
         }
 
         const float MIN_COLLISION_IMPULSE = 0.1f;

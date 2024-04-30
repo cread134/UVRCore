@@ -34,6 +34,11 @@ namespace Core.XRFramework.Physics
             PhysicsMatchRotation(rotation);
             PhysicsMatchPosition(position);
         }
+        public void MatchTransform(Vector3 position, Quaternion rotation, PhysicsObject physicsObject)
+        {
+            PhysicsMatchRotationWithObject(rotation, physicsObject);
+            PhysicsMatchPositionWithObject(position, physicsObject);
+        }
 
         public void PhysicsMatchPosition(Vector3 targetPosition)
         {
@@ -43,6 +48,11 @@ namespace Core.XRFramework.Physics
             Vector3 currentSpeedVec = _rigidbody.velocity;
             Vector3 newSpeedVec = neededSpeedVec - currentSpeedVec;
             _rigidbody.AddForce(newSpeedVec, ForceMode.VelocityChange);
+        }
+
+        public void PhysicsMatchPositionWithObject(Vector3 targetPosition, PhysicsObject physicsObject)
+        {
+            PhysicsMatchPosition(targetPosition);
         }
 
         public void PhysicsMatchRotation(Quaternion targetRotation)
@@ -62,6 +72,11 @@ namespace Core.XRFramework.Physics
             angle *= Mathf.Deg2Rad;
             _rigidbody.angularVelocity = (axis * angle / Time.fixedDeltaTime);
             Debug.DrawLine(_rigidbody.position, _rigidbody.position + (_rigidbody.angularVelocity * 0.01f), Color.red);
+        }
+
+        public void PhysicsMatchRotationWithObject(Quaternion targetRotation, PhysicsObject physicsObject)
+        {
+            PhysicsMatchRotation(targetRotation);
         }
     }
 }

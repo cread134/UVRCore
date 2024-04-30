@@ -45,7 +45,7 @@ namespace Core.XrFramework.Toolbars
                 var conroller = context.GetController(handtype);
                 if (goTarget.parent != null)
                 {
-                    if (goTarget.parent.TryGetGrab(handtype, goTarget.transform.position, goTarget.transform.rotation, out var newPosition, out var newRotation))
+                    if (goTarget.parent.TryGetGrab(handtype, goTarget.transform.position, goTarget.transform.up, goTarget.transform.rotation, out var newPosition, out var newRotation))
                     {
                         useHand.transform.position = newPosition;
                         useHand.transform.rotation = newRotation;

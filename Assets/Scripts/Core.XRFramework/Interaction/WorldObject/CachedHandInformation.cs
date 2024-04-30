@@ -6,12 +6,13 @@ namespace Core.XRFramework.Interaction.WorldObject
     {
         public Vector3 TargetPosition;
         public Quaternion TargetRotation;
+        public Vector3 TargetUpVector;
         public GrabPoint GrabPoint;
         public bool IsGrabbing;
 
-        internal (Vector3 newPosition, Quaternion newRotation) GetGrabTransform()
+        internal TransformState GetGrabTransform()
         {
-            return GrabPoint.GetGrabTransform(TargetPosition, TargetRotation);
+            return GrabPoint.GetGrabTransform(TargetPosition, TargetUpVector, TargetRotation);
         }
     }
 }

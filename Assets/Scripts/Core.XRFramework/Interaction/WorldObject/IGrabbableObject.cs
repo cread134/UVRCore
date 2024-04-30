@@ -9,11 +9,11 @@ namespace Core.XRFramework.Interaction.WorldObject
         bool CanGrab();
         void OnHoverEnter();
         void OnHoverExit();
-        void OnGrab(HandType handType, Vector3 referencePosition, Quaternion referenceRotation);
+        void OnGrab(HandType handType, Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation);
         void OnRelease(HandType handType, Vector3 referencePosition, Quaternion referenceRotation);
-        bool TryGetGrab(HandType handType, Vector3 referencePosition, Quaternion referenceRotation, out Vector3 newPosition, out Quaternion newRotation);
+        bool TryGetGrab(HandType handType, Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation, out Vector3 newPosition, out Quaternion newRotation);
         void GetGrabHandPosition(HandType handType, out Vector3 newPosition, out Quaternion newRotation);
-        void UpdateCachedValues(HandType handType, Vector3 targetPosition, Quaternion targetRotation);
+        void UpdateCachedValues(HandType handType, Vector3 targetPosition, Vector3 upDirection, Quaternion targetRotation);
         void UpdateTransformState(HandType handType);
     }
 }

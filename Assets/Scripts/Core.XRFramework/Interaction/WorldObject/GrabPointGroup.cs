@@ -10,6 +10,14 @@ namespace Core.XRFramework.Interaction.WorldObject
     {
         #region GrabPoints
 
+        private void Awake()
+        {
+            foreach (var grabPoint in GrabPoints)
+            {
+                grabPoint.group = this;
+            }
+        }
+
         public GrabPoint[] GrabPoints => grabPoints ??= GetComponentsInChildren<GrabPoint>();
         GrabPoint[] grabPoints;
         GrabPoint[] fLeftHandGrabPoints;

@@ -7,10 +7,13 @@ using UnityEngine;
 
 namespace Core.XRFramework
 {
+    [SelectionBase]
     public class GrabPoint : MonoBehaviour
     {
         public GrabbableObject parent;
+        public GrabPointGroup group;
         public HandType handType;
+
         public float maxGrabDistance = 0.05f;
         public float requiredMatchAngle = 35f;
         public bool CanGrabPoint(Vector3 referencePosition, Quaternion referenceRotation, out float priority)
@@ -29,9 +32,9 @@ namespace Core.XRFramework
             return true;
         }
 
-        public (Vector3 newPosition, Quaternion newRotation) GetGrabTransform(Vector3 referencePosition, Quaternion referenceRotation)
+        public TransformState GetGrabTransform(Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation)
         {
-            return (transform.position, transform.rotation);
+            return new(transform.position, transform.up, transform.rotation);
         }
 
         #region Debug
