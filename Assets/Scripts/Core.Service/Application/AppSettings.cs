@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Core.Service.Application
 {
-    public class AppSettings : SingletonClass<AppSettings>
+    internal class AppSettings : SingletonClass<AppSettings>, IAppSettings
     {
         public static bool IsEditor => Instance._isEditor;
         bool _isEditor;

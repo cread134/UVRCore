@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.XR;
 
 namespace Core.XRFramework
 {
-    public class HapticsService : SingletonClass<HapticsService>
+    internal class HapticsService : SingletonClass<HapticsService>, IHapticsService
     {
         XrContext fContext;
         XrContext Context

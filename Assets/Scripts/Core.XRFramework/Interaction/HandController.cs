@@ -1,9 +1,8 @@
+using Core.Service.DependencyManagement;
+using Core.Service.Logging;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Core.XRFramework.Interaction
@@ -19,6 +18,12 @@ namespace Core.XRFramework.Interaction
     {
         [SerializeField] HandType _handType;
         public HandType HandType => _handType;
+
+        #region loggingPattern
+        ILoggingService _loggingService;
+        ILoggingService LoggingService => 
+            _loggingService ??= ObjectFactory.ResolveService<ILoggingService>();
+        #endregion
 
         private void Awake()
         {
@@ -124,11 +129,11 @@ namespace Core.XRFramework.Interaction
 
         public void OnMainButtonDown()
         {
-            Debug.Log($"{HandType} Main Button Down");
+            LoggingService?.Log($"{HandType} Main Button Down");
         }
         public void OnSecondaryButtonDown()
         {
-            Debug.Log($"{HandType} Secondary Button Down");
+            LoggingService?.Log($"{HandType} Secondary Button Down");
         }
 
         internal void SendHapticsImpulse(float amplitude, float duration)
