@@ -34,6 +34,8 @@ namespace Core.XRFramework.Interaction
         [SerializeField] private ActionBasedController _xrController;
         [SerializeField] private InputActionReference _gripAction;
         [SerializeField] private InputActionReference _triggerAction;
+        [SerializeField] private InputActionReference _mainButtonAction;
+        [SerializeField] private InputActionReference _secondaryButtonAction;
         [SerializeField][Range(0, 1)] private float _gripThreshold = 0.5f;
         [SerializeField][Range(0, 1)] private float _triggerThreshold = 0.5f;
 
@@ -43,6 +45,10 @@ namespace Core.XRFramework.Interaction
         public EventHandler OnGripRelease { get; set; }
         public EventHandler OnTriggerPress { get; set; }
         public EventHandler OnTriggerRelease { get; set; }
+        public EventHandler OnMainButtonDownEvent { get; set; }
+        public EventHandler OnMainButtonUpEvent { get; set; }
+        public EventHandler OnSecondaryButtonDownEvent { get; set; }
+        public EventHandler OnSecondaryButtonUpEvent { get; set; }
 
         float _gripValue;
         public float GripValue
@@ -125,15 +131,34 @@ namespace Core.XRFramework.Interaction
             _gripAction.action.canceled += ctx => OnGripChange();
             _triggerAction.action.performed += ctx => OnTriggerChange();
             _triggerAction.action.canceled += ctx => OnTriggerChange();
+            _mainButtonAction.action.performed += ctx => OnMainButtonDown();
+            _mainButtonAction.action.canceled += ctx => OnMainButtonUp();
+            _secondaryButtonAction.action.performed += ctx => OnSecondaryButtonDown();
+            _secondaryButtonAction.action.canceled += ctx => OnSecondaryButtonUp();
         }
 
         public void OnMainButtonDown()
         {
             LoggingService?.Log($"{HandType} Main Button Down");
+            OnMainButtonDownEvent?.Invoke(this, EventArgs.Empty);
         }
+
+        public void OnMainButtonUp()
+        {
+            LoggingService?.Log($"{HandType} Main Button Up");
+            OnSecondaryButtonUpEvent?.Invoke(this, EventArgs.Empty);
+        }
+
         public void OnSecondaryButtonDown()
         {
             LoggingService?.Log($"{HandType} Secondary Button Down");
+            OnSecondaryButtonDownEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void OnSecondaryButtonUp()
+        {
+            LoggingService?.Log($"{HandType} Secondary Button Up");
+            OnSecondaryButtonUpEvent?.Invoke(this, EventArgs.Empty);
         }
 
         internal void SendHapticsImpulse(float amplitude, float duration)

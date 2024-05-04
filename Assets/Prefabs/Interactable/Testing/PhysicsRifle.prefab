@@ -46,6 +46,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3d5eb3a332e03e4799fc3d044d4e19a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1510149825453001662
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4163506804413534379}
+  m_Layer: 9
+  m_Name: CentreOfMass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4163506804413534379
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510149825453001662}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0.0892, z: 0.0073}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2558535126615400286}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1673105815121603148
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,6 +122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
+  group: {fileID: 0}
   handType: 1
   maxGrabDistance: 0.05
   requiredMatchAngle: 35
@@ -139,6 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
+  group: {fileID: 0}
   handType: 0
   maxGrabDistance: 0.05
   requiredMatchAngle: 35
@@ -233,6 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
+  group: {fileID: 0}
   handType: 0
   maxGrabDistance: 0.05
   requiredMatchAngle: 35
@@ -318,12 +352,13 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.956, y: 1.0811691, z: 0.39801025}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1414274442124727207}
   - {fileID: 6130566486070684813}
   - {fileID: 1377840472331379337}
+  - {fileID: 4163506804413534379}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &3326185096572959081
@@ -366,6 +401,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Mass: 1
+  centreOfMassOverride: {fileID: 4163506804413534379}
 --- !u!114 &5399701968406218449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -427,6 +463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
+  group: {fileID: 0}
   handType: 1
   maxGrabDistance: 0.05
   requiredMatchAngle: 35

@@ -39,21 +39,52 @@ namespace Core.XRFramework.Physics
             PhysicsMatchRotationWithObject(rotation, physicsObject);
             PhysicsMatchPositionWithObject(position, physicsObject);
         }
-
+        #region position
         public void PhysicsMatchPosition(Vector3 targetPosition)
         {
-            Vector3 moveToHandVec = targetPosition - _rigidbody.transform.position;
-            float neededSpeed = moveToHandVec.magnitude * (1.0f / Time.fixedDeltaTime);
-            Vector3 neededSpeedVec = moveToHandVec.normalized * neededSpeed;
-            Vector3 currentSpeedVec = _rigidbody.velocity;
-            Vector3 newSpeedVec = neededSpeedVec - currentSpeedVec;
+            var newSpeedVec = GetMatchVelocity(targetPosition);
             _rigidbody.AddForce(newSpeedVec, ForceMode.VelocityChange);
         }
 
         public void PhysicsMatchPositionWithObject(Vector3 targetPosition, PhysicsObject physicsObject)
         {
-            PhysicsMatchPosition(targetPosition);
+            var matchVelocity = GetMatchVelocity(targetPosition);
+            var minimumVelocity = matchVelocity.magnitude * 0.4f;
+            var maxVelocity = matchVelocity.magnitude;
+
+            matchVelocity *= GetMassSlowdownMultipler(physicsObject);
+
+            ClampVelocity(minimumVelocity, maxVelocity, ref matchVelocity);
+            _rigidbody.AddForce(matchVelocity, ForceMode.VelocityChange);
         }
+
+        void ClampVelocity(float minMagnitude, float maxMagnitude, ref Vector3 velocity)
+        {
+            velocity = Vector3.ClampMagnitude(velocity, maxMagnitude);
+            if (velocity.magnitude < minMagnitude)
+            {
+                velocity = velocity.normalized * minMagnitude;
+            }
+        }
+
+        float GetMassSlowdownMultipler(PhysicsObject physicsObject)
+        {
+            var baseSlowdown = Mathf.Clamp01(1f / physicsObject.Mass);
+            return baseSlowdown;
+        }
+
+        Vector3 GetMatchVelocity(Vector3 targetPosition)
+        {
+            Vector3 moveToHandVec = targetPosition - _rigidbody.transform.position;
+            float neededSpeed = moveToHandVec.magnitude * (1.0f / Time.fixedDeltaTime);
+            Vector3 neededSpeedVec = moveToHandVec.normalized * neededSpeed;
+            Vector3 currentSpeedVec = _rigidbody.velocity;
+            Vector3 newVelocity = neededSpeedVec - currentSpeedVec;
+            return newVelocity;
+        }
+        #endregion
+
+        #region rotation
 
         public void PhysicsMatchRotation(Quaternion targetRotation)
         {
@@ -71,12 +102,13 @@ namespace Core.XRFramework.Physics
 
             angle *= Mathf.Deg2Rad;
             _rigidbody.angularVelocity = (axis * angle / Time.fixedDeltaTime);
-            Debug.DrawLine(_rigidbody.position, _rigidbody.position + (_rigidbody.angularVelocity * 0.01f), Color.red);
         }
 
         public void PhysicsMatchRotationWithObject(Quaternion targetRotation, PhysicsObject physicsObject)
         {
             PhysicsMatchRotation(targetRotation);
         }
+
+        #endregion
     }
 }

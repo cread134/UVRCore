@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Core.XRFramework.Interaction.WorldObject
 {
-    public class GrabPointGroup : MonoBehaviour
+    public class GrabPointGroup : MonoBehaviour, IInputSubscriber
     {
         #region GrabPoints
 
@@ -26,6 +26,8 @@ namespace Core.XRFramework.Interaction.WorldObject
         GrabPoint[] LeftHandGrabPoints => fLeftHandGrabPoints ??= grabPoints.Where(x => x.handType == HandType.Left).ToArray();
         GrabPoint[] GetGrabPoints(HandType handType) => handType == HandType.Left ? LeftHandGrabPoints : RightHandGrabPoints;
         #endregion
+
+        public bool AllowTwoHandedGrab = false;
 
         public bool TryGetGrabPosition(HandType handType, Vector3 referencePosition, Quaternion referenceRotation, out GrabPoint grabPoint)
         {
@@ -57,6 +59,26 @@ namespace Core.XRFramework.Interaction.WorldObject
                 return false;
             }
             return true;
+        }
+
+        public void OnTriggerDown(HandType handType)
+        {
+        }
+
+        public void OnTriggerUp(HandType handType)
+        {
+        }
+
+        public void OnTriggerChange(HandType handType, float newValue)
+        {
+        }
+
+        public void OnMainDown(HandType handType)
+        {
+        }
+
+        public void OnMainUp(HandType handType)
+        {
         }
     }
 }

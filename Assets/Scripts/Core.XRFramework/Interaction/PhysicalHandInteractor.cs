@@ -59,8 +59,16 @@ namespace Core.XRFramework.Interaction
             handController.OnGripPress += OnGripPress;
             handController.OnGripRelease += OnGripRelease;
 
+            handController.OnTriggerPress += OnTriggerPressed;
+            handController.OnTriggerRelease += OnTriggerReleased;
+            handController.OnTriggerChangeEvent += OnTriggerChanged;
+
+            handController.OnMainButtonDownEvent += OnMainPressed;
+            handController.OnSecondaryButtonUpEvent += OnMainReleased;
+
             grabIndicator.SetActive(false);
         }
+
         #region grabbing
         public IGrabbableObject hoveredObject;
         IGrabbableObject grabbedObject;
@@ -147,7 +155,7 @@ namespace Core.XRFramework.Interaction
                         closest = hoverBuffer[i];
                     }
                 }
-                hoveredObject = hoverBuffer[0].collider.GetComponent<IGrabbableObject>();
+                hoveredObject = hoverBuffer[0].collider.attachedRigidbody?.GetComponent<IGrabbableObject>();
                 if (hoveredObject != null)
                 {
                     hoveredObject.OnHoverEnter();
@@ -218,11 +226,54 @@ namespace Core.XRFramework.Interaction
         }
         #endregion
 
+        #region inputTransmission
+        private void OnMainReleased(object sender, EventArgs e)
+        {
+            if (IsGrabbingObject && grabbedObject is IInputSubscriber inputSubscriber)
+            {
+                inputSubscriber.OnMainUp(handType);
+            }
+        }
+
+        private void OnMainPressed(object sender, EventArgs e)
+        {
+            if (IsGrabbingObject && grabbedObject is IInputSubscriber inputSubscriber)
+            {
+                inputSubscriber.OnMainDown(handType);
+            }
+        }
+
+        private void OnTriggerChanged(object sender, float e)
+        {
+            if (IsGrabbingObject && grabbedObject is IInputSubscriber inputSubscriber)
+            {
+                inputSubscriber.OnTriggerChange(handType, e);
+            }
+        }
+
+        private void OnTriggerReleased(object sender, EventArgs e)
+        {
+            if (IsGrabbingObject && grabbedObject is IInputSubscriber inputSubscriber)
+            {
+                inputSubscriber.OnTriggerUp(handType);
+            }
+        }
+
+        private void OnTriggerPressed(object sender, EventArgs e)
+        {
+            if (IsGrabbingObject && grabbedObject is IInputSubscriber inputSubscriber)
+            {
+                inputSubscriber.OnTriggerDown(handType);
+            }
+        }
+        #endregion
+
         #region Debug
         private void OnDrawGizmos()
         {
             if (!ValidateDebug()) return;
             var gripColor = Color.Lerp(Color.red, Color.green, handController.GripValue);
+            gripColor.a = 0.3f;
             Gizmos.color = gripColor;
             Gizmos.DrawWireSphere(interactionPoint.position, interactionConfiguration.MaxInteractionDistance);
 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6bddb75495a1be45ac220108c151a5e, type: 3}
   m_Name: InteractionConfiguration
   m_EditorClassIdentifier: 
-  MaxInteractionDistance: 0.03
+  MaxInteractionDistance: 0.06
   PhysicsConfig: {fileID: 11400000, guid: 0cbb06f63052d2e45b05faf66c0a0474, type: 2}
   GrabbableObjectMask: {fileID: 11400000, guid: 297cba3aa4287734999cd901f501a0c0, type: 2}
   hapticGrabAmplitude: 1

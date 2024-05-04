@@ -1,3 +1,5 @@
+using Core.Service.DependencyManagement;
+using Core.Service.Logging;
 using Core.XRFramework.Physics;
 using System;
 using System.Collections;
@@ -8,7 +10,7 @@ namespace Core.XRFramework.Interaction.WorldObject
 {
     [SelectionBase]
     [RequireComponent(typeof(PhysicsObject))]
-    public class GrabbableObject : MonoBehaviour, IGrabbableObject
+    public class GrabbableObject : MonoBehaviour, IGrabbableObject, IInputSubscriber
     {
         [SerializeField] private XrObjectPhysicsConfig physicsConfiguration;
         [SerializeField] private GrabPointGroup[] grabPointGroups;
@@ -19,6 +21,9 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         PhysicsMover PhysicsMover => _physicsMover ??= new PhysicsMover(physicsConfiguration, _physicsObject.PhysicsRigidbody);
         PhysicsMover _physicsMover;
+
+        ILoggingService _loggingService;
+        ILoggingService LoggingService => _loggingService ??= ObjectFactory.ResolveService<ILoggingService>();
 
         bool IsTwoHanded => storedHandInformation[HandType.Right].IsGrabbing && storedHandInformation[HandType.Left].IsGrabbing;
         HandType _primaryGrabType;
@@ -57,6 +62,7 @@ namespace Core.XRFramework.Interaction.WorldObject
             }
             foreach (var group in grabPointGroups)
             {
+                Debug.DrawLine(referencePosition, group.transform.position, Color.blue);
                 if (group.TryGetGrabPosition(handType, referencePosition, referenceRotation, out var grabPoint))
                 {
                     var grabTransform = grabPoint.GetGrabTransform(referencePosition, referenceUp, referenceRotation);
@@ -119,7 +125,7 @@ namespace Core.XRFramework.Interaction.WorldObject
         bool ShouldApplyTwoHandedRotation()
         {
             return IsTwoHanded 
-                && storedHandInformation[HandType.Left].GrabPoint.group != storedHandInformation[HandType.Right].GrabPoint.group;
+                && (storedHandInformation[HandType.Left].GrabPoint.group != storedHandInformation[HandType.Right].GrabPoint.group || storedHandInformation[_primaryGrabType].GrabPoint.group.AllowTwoHandedGrab);
         }
 
         Quaternion CalculateTwoHandedRotation()
@@ -143,6 +149,7 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         public void OnGrab(HandType handType, Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation)
         {
+            LoggingService.Log($"object grabbed with {handType} hand", context: this);
             var oppositeType = handType == HandType.Left ? HandType.Right : HandType.Left;
             if (storedHandInformation[oppositeType].IsGrabbing)
             {
@@ -167,7 +174,7 @@ namespace Core.XRFramework.Interaction.WorldObject
             }
             _physicsObject.PhysicsRigidbody.useGravity = true;
             storedHandInformation[handType].IsGrabbing = false;
-            _physicsObject.PhysicsRigidbody.ResetCenterOfMass();
+            _physicsObject.ResetCentreOfMass();
             _physicsMover.Reset();
         }
 
@@ -175,5 +182,53 @@ namespace Core.XRFramework.Interaction.WorldObject
         {
             return true;
         }
+
+        #region inputTransmission
+
+        public void OnTriggerDown(HandType handType)
+        {
+            var handInformation = storedHandInformation[handType];
+            if (handInformation.IsGrabbing && handInformation.GrabPoint.group is IInputSubscriber inputSubscriber)
+            {
+                inputSubscriber.OnTriggerDown(handType);
+            }
+        }
+
+        public void OnTriggerUp(HandType handType)
+        {
+            var handInformation = storedHandInformation[handType];
+            if (handInformation.IsGrabbing && handInformation.GrabPoint.group is IInputSubscriber inputSubscriber)
+            {
+                inputSubscriber.OnTriggerUp(handType);
+            }
+        }
+
+        public void OnTriggerChange(HandType handType, float newValue)
+        {
+            var handInformation = storedHandInformation[handType];
+            if (handInformation.IsGrabbing && handInformation.GrabPoint.group is IInputSubscriber inputSubscriber)
+            {
+                inputSubscriber.OnTriggerChange(handType, newValue);
+            }
+        }
+
+        public void OnMainDown(HandType handType)
+        {
+            var handInformation = storedHandInformation[handType];
+            if (!handInformation.IsGrabbing && handInformation.GrabPoint.group is IInputSubscriber inputSubscriber)
+            {
+                inputSubscriber.OnMainDown(handType);
+            }
+        }
+
+        public void OnMainUp(HandType handType)
+        {
+            var handInformation = storedHandInformation[handType];
+            if (!handInformation.IsGrabbing && handInformation.GrabPoint.group is IInputSubscriber inputSubscriber)
+            {
+                inputSubscriber.OnMainUp(handType);
+            }
+        }
+        #endregion
     }
 }
