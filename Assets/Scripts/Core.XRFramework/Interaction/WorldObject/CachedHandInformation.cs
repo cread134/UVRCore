@@ -4,11 +4,34 @@ namespace Core.XRFramework.Interaction.WorldObject
 {
     public class CachedHandInformation
     {
+        public CachedHandInformation(HandType handType)
+        {
+            HandType = handType
+                ;
+        }
         public Vector3 TargetPosition;
         public Quaternion TargetRotation;
         public Vector3 TargetUpVector;
         public GrabPoint GrabPoint;
-        public bool IsGrabbing;
+        public HandType HandType;
+
+        bool fIsGrabbing;
+        public bool IsGrabbing
+        {
+            get 
+            { 
+                return fIsGrabbing; 
+            }
+            set
+            {
+                fIsGrabbing = value;
+                if (GrabPoint != null)
+                {
+                    GrabPoint.IsGrabbed = value;
+                    GrabPoint.handType = HandType;
+                }
+            }
+        }
 
         internal TransformState GetGrabTransform()
         {

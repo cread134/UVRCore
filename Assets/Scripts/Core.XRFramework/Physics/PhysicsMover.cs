@@ -55,6 +55,7 @@ namespace Core.XRFramework.Physics
             matchVelocity *= GetMassSlowdownMultipler(physicsObject);
 
             ClampVelocity(minimumVelocity, maxVelocity, ref matchVelocity);
+            Vector3.SmoothDamp(_rigidbody.velocity, matchVelocity, ref matchVelocity, physicsObject.Mass);
             _rigidbody.AddForce(matchVelocity, ForceMode.VelocityChange);
         }
 

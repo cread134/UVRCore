@@ -10,14 +10,38 @@ namespace Core.XRFramework
     [SelectionBase]
     public class GrabPoint : MonoBehaviour
     {
-        public GrabbableObject parent;
-        public GrabPointGroup group;
+        [HideInInspector] public GrabbableObject Parent { get; set; }
+        [HideInInspector] public GrabPointGroup Group { get; set; }
         public HandType handType;
 
+        [Header("Grab Point Settings")]
         public float maxGrabDistance = 0.05f;
         public float requiredMatchAngle = 35f;
+
+        [Tooltip("Grab points to when grabbed will disallow this from being grabbed")]
+        public List<GrabPoint> blockers = new();
+
+        public bool IsGrabbed { get; set; }
+        public HandType HandType { get; set; }
+
         public bool CanGrabPoint(Vector3 referencePosition, Quaternion referenceRotation, out float priority)
         {
+            if (IsGrabbed)
+            {
+                priority = 0;
+                return false;
+            }
+            if (blockers.Count > 0)
+            {
+                foreach (var blocker in blockers)
+                {
+                    if (blocker.IsGrabbed)
+                    {
+                        priority = 0;
+                        return false;
+                    }
+                }
+            }
             var distance = Vector3.Distance(referencePosition, transform.position);
             var angle = Quaternion.Angle(referenceRotation, transform.rotation);
             priority = (0.1f * (distance + 1)) * (0.1f * (angle + 1));

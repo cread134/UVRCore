@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Core.XRFramework.Interaction.WorldObject
 {
@@ -14,7 +15,7 @@ namespace Core.XRFramework.Interaction.WorldObject
         {
             foreach (var grabPoint in GrabPoints)
             {
-                grabPoint.group = this;
+                grabPoint.Group = this;
             }
         }
 
@@ -48,7 +49,7 @@ namespace Core.XRFramework.Interaction.WorldObject
                     {
                         grabPoint = checkGrabPoint;
                     }
-                    Debug.DrawLine(referencePosition, checkGrabPoint.transform.position, Color.green);
+                    Debug.DrawLine(referencePosition, checkGrabPoint.transform.position, Color.magenta);
                 } else
                 {
                     Debug.DrawLine(referencePosition, checkGrabPoint.transform.position, Color.red);
@@ -58,27 +59,65 @@ namespace Core.XRFramework.Interaction.WorldObject
             {
                 return false;
             }
+            Debug.DrawLine(referencePosition, grabPoint.transform.position, Color.green);
             return true;
+        }
+
+        [Header("Input events")]
+        public UnityEvent<HandType, GrabPoint> OnTriggerDownEvent = new();
+        public UnityEvent<HandType, GrabPoint> OnTriggerUpEvent = new();
+        public UnityEvent<HandType, GrabPoint, float> OnTriggerChangeEvent = new();
+        public UnityEvent<HandType, GrabPoint> OnMainDownEvent = new();
+        public UnityEvent<HandType, GrabPoint> OnMainUpEvent = new();
+
+        GrabPoint GetGrabbedPoint(HandType handType)
+        {
+            return grabPoints.FirstOrDefault(x => x.IsGrabbed && x.handType == handType);
         }
 
         public void OnTriggerDown(HandType handType)
         {
+            var grabbedPoint = GetGrabbedPoint(handType);
+            if (grabbedPoint != null)
+            {
+                OnTriggerDownEvent.Invoke(handType, grabbedPoint);
+            }
         }
 
         public void OnTriggerUp(HandType handType)
         {
+            var grabbedPoint = GetGrabbedPoint(handType);
+            if (grabbedPoint != null)
+            {
+                OnTriggerUpEvent.Invoke(handType, grabbedPoint);
+            }
         }
 
         public void OnTriggerChange(HandType handType, float newValue)
         {
+            var grabbedPoint = GetGrabbedPoint(handType);
+            if (grabbedPoint != null)
+            {
+                OnTriggerChangeEvent.Invoke(handType, grabbedPoint, newValue);
+            }
         }
 
         public void OnMainDown(HandType handType)
         {
+            var grabbedPoint = GetGrabbedPoint(handType);
+            if (grabbedPoint != null)
+            {
+                OnMainDownEvent.Invoke(handType, grabbedPoint);
+            }
         }
 
         public void OnMainUp(HandType handType)
         {
+            var grabbedPoint = GetGrabbedPoint(handType);
+            if (grabbedPoint != null)
+            {
+                OnMainUpEvent.Invoke(handType, grabbedPoint);
+            }
         }
     }
 }

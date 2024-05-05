@@ -7,11 +7,6 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Core.XRFramework.Interaction
 {
-    public enum HandType
-    {
-        Left,
-        Right
-    }
 
     [SelectionBase]
     public class HandController : MonoBehaviour
@@ -19,11 +14,7 @@ namespace Core.XRFramework.Interaction
         [SerializeField] HandType _handType;
         public HandType HandType => _handType;
 
-        #region loggingPattern
-        ILoggingService _loggingService;
-        ILoggingService LoggingService => 
-            _loggingService ??= ObjectFactory.ResolveService<ILoggingService>();
-        #endregion
+        LazyService<ILoggingService> loggingService = new LazyService<ILoggingService>();
 
         private void Awake()
         {
@@ -139,25 +130,25 @@ namespace Core.XRFramework.Interaction
 
         public void OnMainButtonDown()
         {
-            LoggingService?.Log($"{HandType} Main Button Down");
+            loggingService.Value?.Log($"{HandType} Main Button Down");
             OnMainButtonDownEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public void OnMainButtonUp()
         {
-            LoggingService?.Log($"{HandType} Main Button Up");
+            loggingService.Value?.Log($"{HandType} Main Button Up");
             OnSecondaryButtonUpEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public void OnSecondaryButtonDown()
         {
-            LoggingService?.Log($"{HandType} Secondary Button Down");
+            loggingService.Value?.Log($"{HandType} Secondary Button Down");
             OnSecondaryButtonDownEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public void OnSecondaryButtonUp()
         {
-            LoggingService?.Log($"{HandType} Secondary Button Up");
+            loggingService.Value?.Log($"{HandType} Secondary Button Up");
             OnSecondaryButtonUpEvent?.Invoke(this, EventArgs.Empty);
         }
 

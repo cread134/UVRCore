@@ -16,7 +16,8 @@ namespace Core.Service.DependencyManagement
         {
             objectRegistry = new Dictionary<Type, Func<object>>();
             loggingService = ServiceConfiguration.ConfigureLogging(this);
-            ServiceConfiguration.RegisterServices(this);
+            ServiceConfiguration.RegisterServices();
+            ServiceConfiguration.RegisterMonoBehaviours(this);
         }
 
         public static void RegisterService<T>(object instance)

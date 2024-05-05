@@ -12,6 +12,11 @@ namespace Core.XRFramework.Physics
         public Rigidbody PhysicsRigidbody => _rigidbody ??= GetComponent<Rigidbody>();
         public float Mass = 1f;
 
+        public float VelocityMagnitude => PhysicsRigidbody.velocity.magnitude;
+        public Vector3 Velocity => PhysicsRigidbody.velocity;
+
+        public bool IsGrabbed { get; set; }
+
         #region centreOfMass
         public Transform centreOfMassOverride;
         Vector3 CentreOfMass
@@ -41,6 +46,14 @@ namespace Core.XRFramework.Physics
             ResetVelocity();
         }
 
+        private void FixedUpdate()
+        {
+            if (IsGrabbed)
+            {
+                UpdateForce();
+            }
+        }
+
         public void ResetVelocity()
         {
             PhysicsRigidbody.velocity = Vector3.zero;
@@ -60,6 +73,31 @@ namespace Core.XRFramework.Physics
 
         public virtual void OnCollide(Collision collision)
         {
+        }
+
+        #endregion
+
+        #region force
+        void UpdateForce()
+        {
+            _torqueCache = Vector3.Lerp(_torqueCache, Vector3.zero, Time.deltaTime * 10f);
+            _forceCache = Vector3.Lerp(_forceCache, Vector3.zero, Time.deltaTime * 10f);
+
+            PhysicsRigidbody.AddForce(_forceCache, ForceMode.Force);
+            PhysicsRigidbody.AddTorque(_torqueCache, ForceMode.Force);
+        }
+
+        private Vector3 _torqueCache;
+        private Vector3 _forceCache;
+
+        public void AddForce(Vector3 force, ForceMode forceMode)
+        {
+            _forceCache += force;
+        }
+
+        public void AddTorque(Vector3 torque, ForceMode forceMode)
+        {
+            _torqueCache += torque;
         }
 
         #endregion
