@@ -5,9 +5,11 @@ namespace Core.Service.AudioManagement
     [CreateAssetMenu]
     public class GameSound : ScriptableObject
     {
-        public AudioClip AudioClips;
+        public AudioClip[] AudioClips;
 
-        public float Volume = 1;
+        public float VolumeMultiplier = 1;
         public float RandomPitch = 0f;
+        public float MinRangeMultiplier = 1f;
+        public float MaxRangeMultiplier = 1f;
     }
 }

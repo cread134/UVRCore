@@ -22,20 +22,39 @@ namespace Core.Service.AudioManagement
         {
             for (int i = 0; i < _poolSize; i++)
             {
-                var instance = AudioInstance.Create(transform);
+                var instance = AudioInstance.Create(transform, OnSoundFinish);
                 _pool.Enqueue(instance);
             }
             _isInitialized = true;
         }
 
-        public void PlaySound(GameSound gameSound, Vector3? position = null, Quaternion? rotation = null, AudioOverride? audioOverride = null)
+        void OnSoundFinish(AudioInstance instance)
+        {
+            if (_playingPool.Contains(instance))
+            {
+                _playingPool.Dequeue();
+                _pool.Enqueue(instance);
+            }
+        }
+
+        public void PlaySound(GameSound gameSound, Vector3? position = null, Quaternion? rotation = null, bool doLoop = false, AudioOverride? audioOverride = null)
         {
             if (_isInitialized == false)
                 return;
 
             position ??= Vector3.zero;
             rotation ??= Quaternion.identity;
-            var instance = _pool.Dequeue();
+            AudioInstance instance;
+            if (_pool.Count == 0 && _playingPool.Count > 0)
+            {
+                instance = _playingPool.Dequeue();
+                instance.StopPlaying();
+            }
+            instance = _pool.Dequeue();
+            instance.transform.position = position.Value;
+            instance.transform.rotation = rotation.Value;
+            instance.PlaySound(gameSound, doLoop, audioOverride);
+            _playingPool.Enqueue(instance);
         }
     }
 }
