@@ -24,6 +24,11 @@ namespace Core.XRFramework
         public bool IsGrabbed { get; set; }
         public HandType HandType { get; set; }
 
+        public virtual void OnGrabbed(HandType handType, Vector3 referencePosition, Quaternion referenceRotation)
+        {
+            Group.OnGrabbed(handType, this, referencePosition, referenceRotation);
+        }
+
         public bool CanGrabPoint(Vector3 referencePosition, Quaternion referenceRotation, out float priority)
         {
             if (IsGrabbed)
@@ -56,7 +61,7 @@ namespace Core.XRFramework
             return true;
         }
 
-        public TransformState GetGrabTransform(Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation)
+        public virtual TransformState GetGrabTransform(Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation)
         {
             return new(transform.position, transform.up, transform.rotation);
         }

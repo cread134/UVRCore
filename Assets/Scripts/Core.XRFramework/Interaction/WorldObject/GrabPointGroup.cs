@@ -30,7 +30,7 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         public bool AllowTwoHandedGrab = false;
 
-        public bool TryGetGrabPosition(HandType handType, Vector3 referencePosition, Quaternion referenceRotation, out GrabPoint grabPoint)
+        public virtual bool TryGetGrabPosition(HandType handType, Vector3 referencePosition, Quaternion referenceRotation, out GrabPoint grabPoint)
         {
             grabPoint = null;
             var toHandGrabPoints = GetGrabPoints(handType);
@@ -118,6 +118,10 @@ namespace Core.XRFramework.Interaction.WorldObject
             {
                 OnMainUpEvent.Invoke(handType, grabbedPoint);
             }
+        }
+
+        internal virtual void OnGrabbed(HandType handType, GrabPoint grabPoint, Vector3 referencePosition, Quaternion referenceRotation)
+        { 
         }
     }
 }

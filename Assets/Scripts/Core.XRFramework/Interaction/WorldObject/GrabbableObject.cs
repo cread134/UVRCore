@@ -156,8 +156,8 @@ namespace Core.XRFramework.Interaction.WorldObject
             {
                 _primaryGrabType = handType;
             }
-            storedHandInformation[handType].IsGrabbing = true;
             TryGetGrab(handType, referencePosition, referenceUp, referenceRotation, out Vector3 newPosition, out Quaternion newRotation);
+            storedHandInformation[handType].IsGrabbing = true;
 
             _physicsObject.IsGrabbed = true;
             _physicsObject.PhysicsRigidbody.useGravity = false;

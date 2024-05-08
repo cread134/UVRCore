@@ -29,6 +29,7 @@ namespace Core.XRFramework.Interaction.WorldObject
                 {
                     GrabPoint.IsGrabbed = value;
                     GrabPoint.handType = HandType;
+                    GrabPoint.OnGrabbed(HandType, TargetPosition, TargetRotation);
                 }
             }
         }
