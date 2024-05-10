@@ -1,20 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace Core.Service.Logging
 {
-    internal class StructuredLog
+    public class StructuredLog
     {
-        Dictionary<string, Func<string>> _properties = new Dictionary<string, Func<string>>();
-        public void AddProperty(string key, Func<string> valueResolver)
+        public static StructuredLog Default
         {
-            _properties.Add(key, valueResolver);
+            get
+            {
+                var instance = new StructuredLog();
+                instance.AddProperty("Message", "");
+                instance.AddProperty("LogLevel", LogLevel.Info);
+                instance.AddProperty("Timestamp", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                instance.AddProperty("GameTime", Time.time);
+                instance.AddProperty("ObjectContext",  "");
+                instance.AddProperty("Thread", System.Threading.Thread.CurrentThread.ManagedThreadId);
+                instance.AddProperty("UnityVersion", UnityEngine.Application.version);
+                return instance;
+            }
         }
 
-        public void GetPropertyValue(string key, out Func<string> valueResolver)
+        Dictionary<string, object> _properties = new Dictionary<string, object>();
+        public void AddProperty(string key, object value)
         {
-            _properties.TryGetValue(key, out valueResolver);
+            _properties.Add(key, value);
+        }
+
+        public bool TryGetPropertyValue(string key, out object valueResolver)
+        {
+            return _properties.TryGetValue(key, out valueResolver);
         }
 
         public string Serialize()
@@ -22,24 +39,25 @@ namespace Core.Service.Logging
             var sb = new StringBuilder();
             foreach (var item in _properties)
             {
-                var value = item.Value();
-                if (string.IsNullOrEmpty(value))
+                var value = item.Value;
+                if (value is null)
                 {
                     continue;
                 }
-                sb.AppendLine($"{item.Key}: {item.Value()}");
+                sb.AppendLine($"{item.Key}: {item.Value}");
             }
             return sb.ToString();
         }
 
-        internal void SetProperty(string key, string value)
+        internal void SetProperty(string key, object value)
         {
             if (_properties.ContainsKey(key))
             {
-                _properties[key] = () => value;
-            } else
+                _properties[key] = value;
+            } 
+            else
             {
-                AddProperty(key, () => value);
+                AddProperty(key, value);
             }
         }
     }

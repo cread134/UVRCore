@@ -3,14 +3,16 @@ using Core.XRFramework.Interaction.WorldObject;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Core.XRFramework
+namespace Core.XRFramework.Interaction.WorldObject
 {
     public class GrabPointGroupLinearMovement : GrabPointGroup, IMoveableGrabPoint
     {
         [Header("MovementSettings")]
         [SerializeField] private Transform _startPoint;
         [SerializeField] private Transform _endPoint;
+        [SerializeField] private Transform _movingPoint;
         [SerializeField] private float _smoothing = 7f;
+        [SerializeField] private MovingComponent[] movingComponents = new MovingComponent[0];
 
         public UnityEvent OnHitStart = new ();
         public UnityEvent OnHitEnd = new();
@@ -23,35 +25,57 @@ namespace Core.XRFramework
 
         public bool Locked { get => locked; set => locked = value; }
 
-        private void Awake()
+        protected override void OnAwake()
         {
-            offset = _startPoint.position - transform.position;
             pointDistance = Vector3.Distance(_startPoint.position, _endPoint.position);
+            _movingPoint.position = _startPoint.position;
+            InitMovingComponents();
+        }
+
+        public override bool AllowTwoHandedMovement => false;
+
+        void InitMovingComponents()
+        {
+            foreach (var component in movingComponents)
+            {
+                component.offset = component.Target.position - _movingPoint.position;
+            }
         }
 
         internal override void OnGrabbed(HandType handType, GrabPoint grabPoint, Vector3 referencePosition, Quaternion referenceRotation)
         {
+            offset = _startPoint.position - grabPoint.transform.position;
             onGrabOffset = referencePosition - grabPoint.transform.position;
             base.OnGrabbed(handType, grabPoint, referencePosition, referenceRotation);
         }
 
-        public override bool TryGetGrabPosition(HandType handType, Vector3 referencePosition, Quaternion referenceRotation, out GrabPoint grabPoint)
+        public override TransformState GetGrabTransform(Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation, GrabPoint grabPoint)
         {
-            if (base.TryGetGrabPosition(handType, referencePosition, referenceRotation, out grabPoint))
+            if (IsGrabbed)
             {
                 UpdateGrabPointPosition(grabPoint, referencePosition);
-                return true;
             }
-            return false;
+            return base.GetGrabTransform(referencePosition, referenceUp, referenceRotation, grabPoint);
         }
 
         void UpdateGrabPointPosition(GrabPoint grabPoint, Vector3 referencePosition)
         {
-            var referenceWithOffset = referencePosition - offset + onGrabOffset;
+            var referenceWithOffset = referencePosition + offset + onGrabOffset;
             var projectedVector = Vector3.Project(referenceWithOffset - _startPoint.position, _endPoint.position - _startPoint.position);
             var clampedVector = Vector3.ClampMagnitude(projectedVector, pointDistance);
             var targetPosition = _startPoint.position + clampedVector;
-            grabPoint.transform.position = Vector3.Lerp(transform.position, targetPosition + offset, Time.deltaTime * _smoothing);
+
+            Debug.DrawLine(_startPoint.position, _endPoint.position, Color.yellow);
+            Debug.DrawLine(_startPoint.position, referencePosition, Color.blue);
+            Debug.DrawLine(_startPoint.position, targetPosition, Color.red);
+
+            _movingPoint.position = Vector3.Lerp(_movingPoint.position, targetPosition, Time.deltaTime * _smoothing);
+            foreach (var component in movingComponents)
+            {
+                if (component.ApplyMovement)
+                    component.Target.position = _movingPoint.position + component.offset;
+            }
+            //grabPoint.transform.position = _movingPoint.position + offset;
             if (Vector3.Distance(transform.position, transform.position + onGrabOffset) < onGrabOffset.magnitude)
             {
                 onGrabOffset = transform.position - referencePosition;

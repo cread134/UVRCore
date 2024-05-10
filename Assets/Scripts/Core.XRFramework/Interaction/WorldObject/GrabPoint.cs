@@ -1,5 +1,6 @@
 using Core.XRFramework.Interaction;
 using Core.XRFramework.Interaction.WorldObject;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -11,7 +12,18 @@ namespace Core.XRFramework
     public class GrabPoint : MonoBehaviour
     {
         [HideInInspector] public GrabbableObject Parent { get; set; }
-        [HideInInspector] public GrabPointGroup Group { get; set; }
+        GrabPointGroup fGrabPointGroup;
+        public GrabPointGroup Group
+        {
+            get
+            {
+                return fGrabPointGroup ??= GetComponentInParent<GrabPointGroup>();
+            }
+            set
+            {
+                fGrabPointGroup = value;
+            }
+        }
         public HandType handType;
 
         [Header("Grab Point Settings")]
@@ -26,7 +38,6 @@ namespace Core.XRFramework
 
         public virtual void OnGrabbed(HandType handType, Vector3 referencePosition, Quaternion referenceRotation)
         {
-            Group.OnGrabbed(handType, this, referencePosition, referenceRotation);
         }
 
         public bool CanGrabPoint(Vector3 referencePosition, Quaternion referenceRotation, out float priority)
@@ -94,7 +105,11 @@ namespace Core.XRFramework
 
         protected virtual void DrawAddGizmos()
         {
-        } 
+        }
+
+        internal void OnReleased(HandType handType)
+        {
+        }
         #endregion
     }
 }

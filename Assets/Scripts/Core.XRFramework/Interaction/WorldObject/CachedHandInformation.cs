@@ -6,8 +6,7 @@ namespace Core.XRFramework.Interaction.WorldObject
     {
         public CachedHandInformation(HandType handType)
         {
-            HandType = handType
-                ;
+            HandType = handType;
         }
         public Vector3 TargetPosition;
         public Quaternion TargetRotation;
@@ -28,15 +27,36 @@ namespace Core.XRFramework.Interaction.WorldObject
                 if (GrabPoint != null)
                 {
                     GrabPoint.IsGrabbed = value;
-                    GrabPoint.handType = HandType;
-                    GrabPoint.OnGrabbed(HandType, TargetPosition, TargetRotation);
+  
+                    if (value)
+                    {
+                        GrabPoint.handType = HandType;
+                        GrabPoint.OnGrabbed(HandType, TargetPosition, TargetRotation);
+                    }
+                    else
+                    {
+                        GrabPoint.OnReleased(HandType);
+                    }
+
+                    if (GrabPoint.Group != null)
+                    {
+                        GrabPoint.Group.IsGrabbed = value;
+                        if (value)
+                        {
+                            GrabPoint.Group.OnGrabbed(HandType, GrabPoint, TargetPosition, TargetRotation);
+                        }
+                        else
+                        {
+                            GrabPoint.Group.OnReleased(HandType, GrabPoint);
+                        }
+                    }
                 }
             }
         }
 
         internal TransformState GetGrabTransform()
         {
-            return GrabPoint.GetGrabTransform(TargetPosition, TargetUpVector, TargetRotation);
+            return GrabPoint.Group.GetGrabTransform(TargetPosition, TargetUpVector, TargetRotation, GrabPoint);
         }
     }
 }

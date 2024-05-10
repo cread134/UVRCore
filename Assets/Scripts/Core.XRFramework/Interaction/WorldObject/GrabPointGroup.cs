@@ -17,6 +17,11 @@ namespace Core.XRFramework.Interaction.WorldObject
             {
                 grabPoint.Group = this;
             }
+            OnAwake();
+        }
+
+        protected virtual void OnAwake()
+        {
         }
 
         public GrabPoint[] GrabPoints => grabPoints ??= GetComponentsInChildren<GrabPoint>();
@@ -29,6 +34,8 @@ namespace Core.XRFramework.Interaction.WorldObject
         #endregion
 
         public bool AllowTwoHandedGrab = false;
+
+        public virtual bool AllowTwoHandedMovement { get; } = true;
 
         public virtual bool TryGetGrabPosition(HandType handType, Vector3 referencePosition, Quaternion referenceRotation, out GrabPoint grabPoint)
         {
@@ -61,6 +68,11 @@ namespace Core.XRFramework.Interaction.WorldObject
             }
             Debug.DrawLine(referencePosition, grabPoint.transform.position, Color.green);
             return true;
+        }
+
+        public virtual TransformState GetGrabTransform(Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation, GrabPoint grabPoint)
+        {
+            return grabPoint.GetGrabTransform(referencePosition, referenceUp, referenceRotation);
         }
 
         [Header("Input events")]
@@ -120,8 +132,22 @@ namespace Core.XRFramework.Interaction.WorldObject
             }
         }
 
+        bool _isGrabbed;
+        public bool IsGrabbed
+        {
+            get => _isGrabbed;
+            set
+            {
+                _isGrabbed = value;
+            }
+        }
+
         internal virtual void OnGrabbed(HandType handType, GrabPoint grabPoint, Vector3 referencePosition, Quaternion referenceRotation)
         { 
+        }
+
+        internal virtual void OnReleased(HandType handType, GrabPoint grabPoint)
+        {
         }
     }
 }

@@ -14,26 +14,26 @@ namespace Core.Service.Logging
     }
     internal class LoggingService : ILoggingService
     {
-        private StructuredLog _structuredLog;
-
         internal LoggingService()
         {
-            this._structuredLog = new StructuredLog();
-            _structuredLog.AddProperty("Message", () => "");
-            _structuredLog.AddProperty("LogLevel", () => LogLevel.Info.ToString());
-            _structuredLog.AddProperty("Timestamp", () => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-            _structuredLog.AddProperty("GameTime", () => Time.time.ToString());
-            _structuredLog.AddProperty("ObjectContext", () => "");
+            UnityEngine.Application.logMessageReceived += ApplicationLogMessageReceived;
         }
 
-        public void Log(string message, LogLevel logType = LogLevel.Info, UnityEngine.Object context = null)
+        private void ApplicationLogMessageReceived(string condition, string stackTrace, LogType type)
         {
-            _structuredLog.SetProperty("Message", message);
-            _structuredLog.SetProperty("LogLevel", logType.ToString());
-            _structuredLog.SetProperty("ObjectContext", context?.name ?? "");
-            var serializedLog = _structuredLog.Serialize();
+            if (type == LogType.Exception)
+            {
+                Log(condition, LogLevel.Error);
+                Log(stackTrace, LogLevel.Error);
+            }
+        }
+
+        public void Log(StructuredLog log)
+        {
+            var serializedLog = log.Serialize();
             if (AppSettings.IsEditor)
             {
+                var context = log.TryGetPropertyValue("ObjectContext", out var objectContext) ? objectContext as UnityEngine.Object : null;
                 if (context == null)
                 {
                     Debug.Log(serializedLog);
@@ -43,6 +43,11 @@ namespace Core.Service.Logging
                     Debug.Log(serializedLog, context);
                 }
             }
+        }
+
+        public void Log(string message, LogLevel logType = LogLevel.Info, UnityEngine.Object context = null)
+        {
+            LogBuilder.CreateLog(message).WithLogLevel(logType).WithContext(context).Post();
         }
     }
 }
