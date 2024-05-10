@@ -1,4 +1,5 @@
 ﻿using Core.Service.DependencyManagement;
+using System;
 
 namespace Core.Service.Logging
 {
@@ -23,6 +24,19 @@ namespace Core.Service.Logging
         public LogBuilder WithLogLevel(LogLevel logType)
         {
             this.logType = logType;
+            return this;
+        }
+
+        public LogBuilder Set(string key, string value)
+        {
+            if (_log.HasProperty(key))
+            {
+                _log.SetProperty(key, value);
+            }
+            else
+            {
+                _log.AddProperty(key, value);
+            }
             return this;
         }
 

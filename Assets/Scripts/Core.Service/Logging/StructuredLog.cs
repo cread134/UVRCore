@@ -29,6 +29,11 @@ namespace Core.Service.Logging
             _properties.Add(key, value);
         }
 
+        public bool HasProperty(string key)
+        {
+            return _properties.ContainsKey(key);
+        }
+
         public bool TryGetPropertyValue(string key, out object valueResolver)
         {
             return _properties.TryGetValue(key, out valueResolver);

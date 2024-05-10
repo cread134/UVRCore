@@ -1,6 +1,5 @@
 using Core.Service.Application;
 using System;
-using System.Collections;
 using UnityEngine;
 
 namespace Core.Service.Logging
@@ -10,10 +9,12 @@ namespace Core.Service.Logging
         Info,
         Warning,
         Error,
-        Fatal
+        Exception
     }
     internal class LoggingService : ILoggingService
     {
+        public EventHandler<StructuredLog> OnLog { get; set; }
+
         internal LoggingService()
         {
             UnityEngine.Application.logMessageReceived += ApplicationLogMessageReceived;
@@ -23,9 +24,17 @@ namespace Core.Service.Logging
         {
             if (type == LogType.Exception)
             {
-                Log(condition, LogLevel.Error);
-                Log(stackTrace, LogLevel.Error);
+                var message = $"Exception: {condition}";
+                LogBuilder.CreateLog(message)
+                          .WithLogLevel(LogLevel.Exception)
+                          .Set("StackTrace", stackTrace)
+                          .Post();
             }
+        }
+
+        public void Log(string message, LogLevel logType = LogLevel.Info, UnityEngine.Object context = null)
+        {
+            LogBuilder.CreateLog(message).WithLogLevel(logType).WithContext(context).Post();
         }
 
         public void Log(StructuredLog log)
@@ -43,11 +52,8 @@ namespace Core.Service.Logging
                     Debug.Log(serializedLog, context);
                 }
             }
-        }
 
-        public void Log(string message, LogLevel logType = LogLevel.Info, UnityEngine.Object context = null)
-        {
-            LogBuilder.CreateLog(message).WithLogLevel(logType).WithContext(context).Post();
+            OnLog?.Invoke(this, log);
         }
     }
 }
