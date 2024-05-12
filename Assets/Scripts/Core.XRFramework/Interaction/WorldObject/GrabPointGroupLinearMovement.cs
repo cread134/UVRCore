@@ -11,7 +11,7 @@ namespace Core.XRFramework.Interaction.WorldObject
         [SerializeField] private Transform _startPoint;
         [SerializeField] private Transform _endPoint;
         [SerializeField] private Transform _movingPoint;
-        [SerializeField] private float _smoothing = 7f;
+        [SerializeField] private float _smoothing = 15f;
         [SerializeField] private MovingComponent[] movingComponents = new MovingComponent[0];
 
         public UnityEvent OnHitStart = new ();
@@ -62,6 +62,10 @@ namespace Core.XRFramework.Interaction.WorldObject
         {
             var referenceWithOffset = referencePosition + offset + onGrabOffset;
             var projectedVector = Vector3.Project(referenceWithOffset - _startPoint.position, _endPoint.position - _startPoint.position);
+            if (Vector3.Dot(projectedVector.normalized, (_endPoint.position - _startPoint.position).normalized) < 0)
+            {
+                projectedVector = Vector3.zero;
+            }
             var clampedVector = Vector3.ClampMagnitude(projectedVector, pointDistance);
             var targetPosition = _startPoint.position + clampedVector;
 
@@ -75,7 +79,7 @@ namespace Core.XRFramework.Interaction.WorldObject
                 if (component.ApplyMovement)
                     component.Target.position = _movingPoint.position + component.offset;
             }
-            //grabPoint.transform.position = _movingPoint.position + offset;
+            grabPoint.transform.position = _movingPoint.position - offset;
             if (Vector3.Distance(transform.position, transform.position + onGrabOffset) < onGrabOffset.magnitude)
             {
                 onGrabOffset = transform.position - referencePosition;

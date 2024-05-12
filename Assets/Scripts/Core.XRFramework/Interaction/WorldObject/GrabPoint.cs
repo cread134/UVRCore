@@ -29,6 +29,7 @@ namespace Core.XRFramework
         [Header("Grab Point Settings")]
         public float maxGrabDistance = 0.05f;
         public float requiredMatchAngle = 35f;
+        public int priority = 1;
 
         [Tooltip("Grab points to when grabbed will disallow this from being grabbed")]
         public List<GrabPoint> blockers = new();
@@ -44,7 +45,7 @@ namespace Core.XRFramework
         {
             if (IsGrabbed)
             {
-                priority = 0;
+                priority = Mathf.NegativeInfinity;
                 return false;
             }
             if (blockers.Count > 0)
@@ -60,7 +61,7 @@ namespace Core.XRFramework
             }
             var distance = Vector3.Distance(referencePosition, transform.position);
             var angle = Quaternion.Angle(referenceRotation, transform.rotation);
-            priority = (0.1f * (distance + 1)) * (0.1f * (angle + 1));
+            priority = (1f / distance) * (1f / angle);
             if (distance > (maxGrabDistance * 2f))
             {
                 return false;

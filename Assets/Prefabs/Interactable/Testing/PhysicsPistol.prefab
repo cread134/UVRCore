@@ -33,6 +33,7 @@ Transform:
   - {fileID: 284388725621167238}
   - {fileID: 2165011541412583901}
   - {fileID: 3510324688998164662}
+  - {fileID: 8105640227207627914}
   m_Father: {fileID: 1909566562625029120}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1386285673739708675
@@ -122,6 +123,7 @@ MonoBehaviour:
   handType: 1
   maxGrabDistance: 0.05
   requiredMatchAngle: 35
+  priority: 1
   blockers:
   - {fileID: 1635217428947474066}
 --- !u!1 &2231544616712210129
@@ -234,7 +236,7 @@ Transform:
   m_GameObject: {fileID: 4426436245697589329}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.4999996, z: -0, w: 0.8660257}
-  m_LocalPosition: {x: 0.0045, y: -0.0833, z: -0.0034}
+  m_LocalPosition: {x: 0.0018, y: -0.0833, z: -0.005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -255,6 +257,56 @@ MonoBehaviour:
   handType: 0
   maxGrabDistance: 0.05
   requiredMatchAngle: 35
+  priority: 1
+  blockers: []
+--- !u!1 &5477564908670078415
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8105640227207627914}
+  - component: {fileID: 4537421238813558838}
+  m_Layer: 9
+  m_Name: RightGrab2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8105640227207627914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5477564908670078415}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.6087616, z: -0, w: 0.79335326}
+  m_LocalPosition: {x: 0.011, y: -0.0833, z: -0.0051}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7389139494773818733}
+  m_LocalEulerAnglesHint: {x: 0, y: -75, z: 0}
+--- !u!114 &4537421238813558838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5477564908670078415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d66c43727c470bd4baa9b119eaca84ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: 1
+  maxGrabDistance: 0.05
+  requiredMatchAngle: 35
+  priority: 1
   blockers: []
 --- !u!1 &5836204657598300427
 GameObject:
@@ -303,6 +355,7 @@ MonoBehaviour:
   handType: 0
   maxGrabDistance: 0.05
   requiredMatchAngle: 35
+  priority: 1
   blockers:
   - {fileID: 4622487578804583711}
 --- !u!1 &7583534919627330157
@@ -430,8 +483,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   physicsConfiguration: {fileID: 11400000, guid: 0cbb06f63052d2e45b05faf66c0a0474, type: 2}
-  grabPointGroups:
-  - {fileID: 1386285673739708675}
 --- !u!114 &7690183491912039494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -454,10 +505,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1909566562625029120}
     m_Modifications:
-    - target: {fileID: 187125685289675979, guid: 59ddfdc561a321a49bc29d6c7556153f, type: 3}
-      propertyPath: movingComponents.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 187125685289675979, guid: 59ddfdc561a321a49bc29d6c7556153f, type: 3}
       propertyPath: movingComponents.Array.data[0]
       value: 

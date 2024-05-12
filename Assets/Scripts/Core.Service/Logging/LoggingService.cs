@@ -11,6 +11,7 @@ namespace Core.Service.Logging
         Error,
         Exception
     }
+
     internal class LoggingService : ILoggingService
     {
         public EventHandler<StructuredLog> OnLog { get; set; }
@@ -24,20 +25,26 @@ namespace Core.Service.Logging
         {
             if (type == LogType.Exception)
             {
-                var message = $"Exception: {condition}";
-                LogBuilder.CreateLog(message)
-                          .WithLogLevel(LogLevel.Exception)
-                          .Set("StackTrace", stackTrace)
-                          .Post();
+                try 
+                {
+                    var message = $"Exception: {condition}";
+                    LogBuilder.CreateLog(message)
+                              .WithLogLevel(LogLevel.Exception)
+                              .Set("StackTrace", stackTrace)
+                              .Build();
+                } catch
+                {
+                }
             }
         }
 
         public void Log(string message, LogLevel logType = LogLevel.Info, UnityEngine.Object context = null)
         {
-            LogBuilder.CreateLog(message).WithLogLevel(logType).WithContext(context).Post();
+           var log = LogBuilder.CreateLog(message).WithLogLevel(logType).WithContext(context).Build();
+           PostLog(log);
         }
 
-        public void Log(StructuredLog log)
+        public void PostLog(StructuredLog log)
         {
             var serializedLog = log.Serialize();
             if (AppSettings.IsEditor)

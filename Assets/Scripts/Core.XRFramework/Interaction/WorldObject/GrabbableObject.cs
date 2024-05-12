@@ -171,7 +171,8 @@ namespace Core.XRFramework.Interaction.WorldObject
         {
             LoggingService.Log($"object grabbed with {handType} hand", context: this);
             var oppositeType = handType == HandType.Left ? HandType.Right : HandType.Left;
-            if (storedHandInformation[oppositeType].IsGrabbing)
+            if (storedHandInformation[oppositeType].IsGrabbing 
+             && storedHandInformation[oppositeType].GrabPoint.priority >= storedHandInformation[handType].GrabPoint.priority)
             {
                 _primaryGrabType = oppositeType;
             } else

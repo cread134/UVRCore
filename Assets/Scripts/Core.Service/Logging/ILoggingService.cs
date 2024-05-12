@@ -8,6 +8,6 @@ namespace Core.Service.Logging
     {
         EventHandler<StructuredLog> OnLog { get; set; }
         void Log(string message, LogLevel logType = LogLevel.Info, UnityEngine.Object context = null);
-        void Log(StructuredLog log);
+        void PostLog(StructuredLog log);
     }
 }

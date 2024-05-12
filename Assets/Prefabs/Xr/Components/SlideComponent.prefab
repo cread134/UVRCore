@@ -65,7 +65,8 @@ MonoBehaviour:
   _endPoint: {fileID: 1170946106395043287}
   _movingPoint: {fileID: 702610508254204582}
   _smoothing: 7
-  movingComponents: []
+  movingComponents:
+  - {fileID: 0}
   OnHitStart:
     m_PersistentCalls:
       m_Calls: []
@@ -122,6 +123,7 @@ MonoBehaviour:
   handType: 0
   maxGrabDistance: 0.05
   requiredMatchAngle: 35
+  priority: 0
   blockers: []
 --- !u!1 &7124035816415591866
 GameObject:
