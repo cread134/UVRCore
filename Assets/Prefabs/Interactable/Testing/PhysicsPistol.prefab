@@ -506,6 +506,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1909566562625029120}
     m_Modifications:
     - target: {fileID: 187125685289675979, guid: 59ddfdc561a321a49bc29d6c7556153f, type: 3}
+      propertyPath: springConstant
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 187125685289675979, guid: 59ddfdc561a321a49bc29d6c7556153f, type: 3}
       propertyPath: movingComponents.Array.data[0]
       value: 
       objectReference: {fileID: 2137198880316410172}

@@ -13,6 +13,8 @@ namespace Core.XRFramework.Interaction.WorldObject
         [SerializeField] private Transform _movingPoint;
         [SerializeField] private float _smoothing = 15f;
         [SerializeField] private MovingComponent[] movingComponents = new MovingComponent[0];
+        [SerializeField] private float springConstant = 0f;
+        [SerializeField] private float damping = 1f;
 
         public UnityEvent OnHitStart = new ();
         public UnityEvent OnHitEnd = new();
@@ -20,6 +22,7 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         private Vector3 offset;
         private Vector3 onGrabOffset;
+        private Vector3 velocity;
         float pointDistance;
         private bool locked;
 
@@ -58,6 +61,36 @@ namespace Core.XRFramework.Interaction.WorldObject
             return base.GetGrabTransform(referencePosition, referenceUp, referenceRotation, grabPoint);
         }
 
+        private void Update()
+        {
+            if (!IsGrabbed && !locked)
+            {
+                if (springConstant > 0.1f && Vector3.Distance(_startPoint.position, _movingPoint.position) < 0.1f)
+                {
+                    //get amount to moving to accord to the spring force
+                    Vector3 displacement = _startPoint.position - _movingPoint.position;
+                    Vector3 springForce = springConstant * displacement;
+                    Vector3 dampingForce = -damping * velocity;
+                    Vector3 totalForce = springForce + dampingForce;
+                    Vector3 acceleration = totalForce;
+                    velocity += acceleration * Time.deltaTime;
+
+                    // Update position
+                    _movingPoint.position += velocity * Time.deltaTime;
+
+                    CheckForEvents(velocity);
+                    foreach (var component in movingComponents)
+                    {
+                        if (component.ApplyMovement)
+                            component.Target.position = _movingPoint.position + component.offset;
+                    }
+                }
+            } else
+            {
+                velocity = Vector3.zero;
+            }
+        }
+
         void UpdateGrabPointPosition(GrabPoint grabPoint, Vector3 referencePosition)
         {
             var referenceWithOffset = referencePosition + offset + onGrabOffset;
@@ -73,6 +106,7 @@ namespace Core.XRFramework.Interaction.WorldObject
             Debug.DrawLine(_startPoint.position, referencePosition, Color.blue);
             Debug.DrawLine(_startPoint.position, targetPosition, Color.red);
 
+            velocity = (_movingPoint.position - targetPosition) * Time.deltaTime;
             _movingPoint.position = Vector3.Lerp(_movingPoint.position, targetPosition, Time.deltaTime * _smoothing);
             foreach (var component in movingComponents)
             {
@@ -83,6 +117,39 @@ namespace Core.XRFramework.Interaction.WorldObject
             if (Vector3.Distance(transform.position, transform.position + onGrabOffset) < onGrabOffset.magnitude)
             {
                 onGrabOffset = transform.position - referencePosition;
+            }
+            CheckForEvents(velocity);
+        }
+
+        float eventCooldown = 0.1f;
+        float lastEvent = 0f;
+        void CheckForEvents(Vector3 velocity)
+        {
+            var dot = Vector3.Dot(velocity.normalized, (_endPoint.position - _startPoint.position).normalized);
+            if (dot < 0f)
+            {
+                var distance = Vector3.Distance(_movingPoint.position, _startPoint.position);
+                if (distance < 0.05f)
+                {
+                    if (Time.time > lastEvent)
+                    {
+                        OnHitStart.Invoke();
+                        lastEvent = Time.time + eventCooldown;
+                    }
+                }
+                else if (distance > pointDistance - 0.05f)
+                {
+                    if (Time.time > lastEvent)
+                    {
+                        OnHitEnd.Invoke();
+                        lastEvent = Time.time + eventCooldown;
+                    }
+                }
+                else
+                {
+                    OnHitMove.Invoke(distance / pointDistance);
+                }
+
             }
         }
 
