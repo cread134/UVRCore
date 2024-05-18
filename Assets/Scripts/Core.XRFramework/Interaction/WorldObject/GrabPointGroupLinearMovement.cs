@@ -122,35 +122,37 @@ namespace Core.XRFramework.Interaction.WorldObject
         }
 
         float eventCooldown = 0.1f;
-        float lastEvent = 0f;
+
+        bool atStart = false;
+        bool atEnd = false;
         void CheckForEvents(Vector3 velocity)
         {
             var dot = Vector3.Dot(velocity.normalized, (_endPoint.position - _startPoint.position).normalized);
-            if (dot < 0f)
-            {
                 var distance = Vector3.Distance(_movingPoint.position, _startPoint.position);
-                if (distance < 0.05f)
+                if (distance < 0.03f && dot > 0f)
                 {
-                    if (Time.time > lastEvent)
+                    if (!atStart)
                     {
                         OnHitStart.Invoke();
-                        lastEvent = Time.time + eventCooldown;
+                        Debug.Log("OnHitStart");
                     }
+                    atStart = true;
                 }
-                else if (distance > pointDistance - 0.05f)
+                else if (distance > pointDistance - 0.03f && dot < 0f)
                 {
-                    if (Time.time > lastEvent)
+                    if (!atEnd)
                     {
                         OnHitEnd.Invoke();
-                        lastEvent = Time.time + eventCooldown;
+                        Debug.Log("OnHitEnd");
                     }
+                    atEnd = true;
                 }
                 else
                 {
+                    atStart = false;
+                    atEnd = false;
                     OnHitMove.Invoke(distance / pointDistance);
                 }
-
-            }
         }
 
         private void OnDrawGizmos()

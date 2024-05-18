@@ -5,6 +5,6 @@ namespace Core.Service.AudioManagement
 {
     public interface IAudioService : IGameService
     {
-        void PlaySound(GameSound gameSound, Vector3? position = null, Quaternion? rotation = null, bool doLoop = false, AudioOverride? audioOverride = null);
+        AudioInstance PlaySound(GameSound gameSound, Vector3? position = null, Quaternion? rotation = null, bool doLoop = false, AudioOverride? audioOverride = null);
     }
 }

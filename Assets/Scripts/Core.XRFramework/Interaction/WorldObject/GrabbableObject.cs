@@ -100,15 +100,62 @@ namespace Core.XRFramework.Interaction.WorldObject
             {
                 return;
             }
+
             var cachedInformation = storedHandInformation[handType];
             var getTransform = cachedInformation.GetGrabTransform();
+            var targetPosition = cachedInformation.TargetPosition;
+            var targetRotation = cachedInformation.TargetRotation;
 
-            var calculatedTargetPosition = CalculatePositionalTarget(cachedInformation.TargetPosition, getTransform.Position);
-            var calculatedRotation = ShouldApplyTwoHandedRotation() ? CalculateTwoHandedRotation() 
-                                                                    : CalculateRotationalTarget(cachedInformation.TargetRotation, getTransform.Rotation);
+            if (IsTransformOverriden)
+            {
+                var newValues = OnGrabOverrideUpdate(cachedInformation.TargetPosition,
+                                                     cachedInformation.TargetRotation,
+                                                     _physicsObject.PhysicsRigidbody.position,
+                                                     _physicsObject.PhysicsRigidbody.rotation,
+                                                     getTransform);
+                targetPosition = newValues.newTarget;
+                targetRotation = newValues.newTargetRotation;
+            }
+
+
+            var oppositeSide = _primaryGrabType != HandType.Left ? HandType.Left : HandType.Right;
+            var mainHandTarget = storedHandInformation[oppositeSide].TargetPosition;
+
+            var calculatedTargetPosition = CalculatePositionalTarget(targetPosition, getTransform.Position);
+            var calculatedRotation = ShouldApplyTwoHandedRotation() ? CalculateTwoHandedRotation(mainHandTarget, oppositeSide) 
+                                                                    : CalculateRotationalTarget(targetRotation, getTransform.Rotation);
 
             PhysicsMover?.MatchTransform(calculatedTargetPosition, calculatedRotation, _physicsObject);
         }
+
+        #region override
+
+        (Vector3 newTarget, Quaternion newTargetRotation) OnGrabOverrideUpdate(Vector3 currentTargetPos, Quaternion currentTargetRotation, Vector3 bodyPosition, Quaternion bodyRotation, TransformState currentState)
+        {
+            return _grabOverride.GetOverrideTransform(new GrabOverrideRefValues
+            {
+                CurrentState = currentState,
+                TargetPosition = currentTargetPos,
+                TargetRotation = currentTargetRotation,
+                BodyPosition = bodyPosition,
+                BodyRotation = bodyRotation
+            });
+        }
+
+        public bool IsTransformOverriden { get; private set; }
+        IGrabOverrider _grabOverride;
+        public void SetOverride(IGrabOverrider grabOverride)
+        {
+            _grabOverride = grabOverride;
+            IsTransformOverriden = true;
+        }
+        public void ReleaseOverried()
+        {
+            _grabOverride = null;
+            IsTransformOverriden = false;
+        }
+
+        #endregion
 
         public void UpdateCachedValues(HandType handType, Vector3 targetPosition, Vector3 upDirection, Quaternion targetRotation)
         {
@@ -148,13 +195,11 @@ namespace Core.XRFramework.Interaction.WorldObject
             return (groups[0] != groups[1] || storedHandInformation[_primaryGrabType].GrabPoint.Group.AllowTwoHandedGrab);
         }
 
-        Quaternion CalculateTwoHandedRotation()
+        Quaternion CalculateTwoHandedRotation(Vector3 mainGrabTargetPosiiton, HandType oppositeSide)
         {
             //two handed movement
             var mainGrabPoint = storedHandInformation[_primaryGrabType].GetGrabTransform();
-            var oppositeSide = _primaryGrabType != HandType.Left ? HandType.Left : HandType.Right;
             var secondaryGrabPoint = storedHandInformation[oppositeSide].GetGrabTransform();
-            var mainGrabTargetPosiiton = storedHandInformation[oppositeSide].TargetPosition;
 
             var betweenVector = secondaryGrabPoint.Position - mainGrabPoint.Position;
             var mainGrabMagnitude = betweenVector.magnitude;

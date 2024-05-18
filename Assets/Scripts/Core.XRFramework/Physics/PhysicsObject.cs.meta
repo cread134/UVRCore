@@ -3,7 +3,9 @@ guid: 5d5f16651f6b5154ca04e3216bb5d831
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - defaultCollisionSound: {fileID: 11400000, guid: aa990d8a05477ed48b292a921f0b2cdd, type: 2}
+  - centreOfMassOverride: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

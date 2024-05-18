@@ -1,3 +1,5 @@
+using Core.Service.AudioManagement;
+using Core.Service.DependencyManagement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -16,6 +18,11 @@ namespace Core.XRFramework.Physics
         public Vector3 Velocity => PhysicsRigidbody.velocity;
 
         public bool IsGrabbed { get; set; }
+
+        [Header("Collision")]
+        public GameSound defaultCollisionSound;
+
+        LazyService<IAudioService> AudioService = new LazyService<IAudioService>();
 
         #region centreOfMass
         public Transform centreOfMassOverride;
@@ -73,6 +80,7 @@ namespace Core.XRFramework.Physics
 
         public virtual void OnCollide(Collision collision)
         {
+            defaultCollisionSound?.PlaySound(transform.position);
         }
 
         #endregion

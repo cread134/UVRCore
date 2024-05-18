@@ -37,10 +37,10 @@ namespace Core.Service.AudioManagement
             }
         }
 
-        public void PlaySound(GameSound gameSound, Vector3? position = null, Quaternion? rotation = null, bool doLoop = false, AudioOverride? audioOverride = null)
+        public AudioInstance PlaySound(GameSound gameSound, Vector3? position = null, Quaternion? rotation = null, bool doLoop = false, AudioOverride? audioOverride = null)
         {
             if (_isInitialized == false)
-                return;
+                return null;
 
             position ??= Vector3.zero;
             rotation ??= Quaternion.identity;
@@ -55,6 +55,7 @@ namespace Core.Service.AudioManagement
             instance.transform.rotation = rotation.Value;
             instance.PlaySound(gameSound, doLoop, audioOverride);
             _playingPool.Enqueue(instance);
+            return instance;
         }
     }
 }

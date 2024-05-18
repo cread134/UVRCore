@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using Core.XRFramework.Physics;
+using UnityEngine;
 
 namespace Core.XRFramework.Interaction.WorldObject
 {
     public interface IGrabbableObject
     {
         Transform Transform { get; }
+        bool IsTransformOverriden { get; }
 
         bool CanGrab();
         void OnHoverEnter();
@@ -15,5 +17,7 @@ namespace Core.XRFramework.Interaction.WorldObject
         void GetGrabHandPosition(HandType handType, out Vector3 newPosition, out Quaternion newRotation);
         void UpdateCachedValues(HandType handType, Vector3 targetPosition, Vector3 upDirection, Quaternion targetRotation);
         void UpdateTransformState(HandType handType);
+        void SetOverride(IGrabOverrider grabOverride);
+        void ReleaseOverried();
     }
 }

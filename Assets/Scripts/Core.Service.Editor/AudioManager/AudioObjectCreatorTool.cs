@@ -16,12 +16,13 @@ namespace Core.Service.AudioManagement {
             {
                 return;
             }
-            var createdInstance = ScriptableObject.CreateInstance<GameSound>();
             var path = AssetDatabase.GetAssetPath(clips.First());
-            var name = Path.GetFileName(path);
+            var name = Path.GetFileNameWithoutExtension(path);
             var directory = Path.GetDirectoryName(path);
-            var usePath = Path.Combine(directory, $"{name}_object");
+            var usePath = Path.Combine(directory, $"{name}_object.asset");
+            Debug.Log($"Path: {usePath}");
 
+            var createdInstance = ScriptableObject.CreateInstance<GameSound>();
             AssetDatabase.CreateAsset(createdInstance, usePath);
 
             if (clips.Count > 0)

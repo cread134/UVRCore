@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dd49b9fa62c016489ea2b49752b8322, type: 3}
+  m_Name: ObjectHit_General2_object
+  m_EditorClassIdentifier: 
+  AudioClips:
+  - {fileID: 8300000, guid: a52c5f8bba65f3548aee14b71c8a9d92, type: 3}
+  - {fileID: 8300000, guid: 988f63f6be14b07439d533dea299ecac, type: 3}
+  VolumeMultiplier: 0.7
+  RandomPitch: 0
+  MinRangeMultiplier: 1
+  MaxRangeMultiplier: 1

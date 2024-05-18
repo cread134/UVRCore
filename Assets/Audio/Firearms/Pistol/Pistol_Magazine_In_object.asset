@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dd49b9fa62c016489ea2b49752b8322, type: 3}
+  m_Name: Pistol_Magazine_In_object
+  m_EditorClassIdentifier: 
+  AudioClips:
+  - {fileID: 8300000, guid: 5495d7c49faf61d41a53cb7100875f50, type: 3}
+  - {fileID: 8300000, guid: f8375da5e96183b4b94eb3e3044ee160, type: 3}
+  - {fileID: 8300000, guid: a01bb82663bfc8b408ff5f02b38d73d5, type: 3}
+  VolumeMultiplier: 1
+  RandomPitch: 0
+  MinRangeMultiplier: 1
+  MaxRangeMultiplier: 1
