@@ -203,6 +203,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputPoint: {fileID: 1566078288818441159}
+  inputRadius: 0.01
+  inputMask: {fileID: 11400000, guid: 8f6cf40e655a75b43a9f7bee65c5e2a0, type: 2}
 --- !u!1 &3955677750733723698
 GameObject:
   m_ObjectHideFlags: 0

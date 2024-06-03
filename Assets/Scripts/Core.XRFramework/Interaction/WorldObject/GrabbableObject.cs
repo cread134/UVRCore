@@ -143,16 +143,28 @@ namespace Core.XRFramework.Interaction.WorldObject
         }
 
         public bool IsTransformOverriden { get; private set; }
+        bool overrideDisableCollision = false; 
         IGrabOverrider _grabOverride;
-        public void SetOverride(IGrabOverrider grabOverride)
+        public void SetOverride(IGrabOverrider grabOverride, bool disableCollision = false)
         {
             _grabOverride = grabOverride;
+            overrideDisableCollision = disableCollision;
+
             IsTransformOverriden = true;
+            if (disableCollision)
+            {
+                _physicsObject.CollisionActive = false;
+            }
         }
-        public void ReleaseOverried()
+
+        public void ReleaseOverride()
         {
             _grabOverride = null;
             IsTransformOverriden = false;
+            if (overrideDisableCollision)
+            {
+                _physicsObject.CollisionActive = true;
+            }
         }
 
         #endregion
@@ -204,12 +216,13 @@ namespace Core.XRFramework.Interaction.WorldObject
             var betweenVector = secondaryGrabPoint.Position - mainGrabPoint.Position;
             var mainGrabMagnitude = betweenVector.magnitude;
             var targetVector = (mainGrabTargetPosiiton - mainGrabPoint.Position).normalized * mainGrabMagnitude;
+
             const float mainHandUpInfluence = 0.3f;
             var upDirection = Vector3.Lerp(storedHandInformation[_primaryGrabType].TargetUpVector, storedHandInformation[oppositeSide].TargetUpVector, mainHandUpInfluence);
             var dif = Quaternion.LookRotation(targetVector, upDirection) * Quaternion.Inverse(Quaternion.LookRotation(betweenVector, mainGrabPoint.UpDirection));
-            var restulant = dif * transform.rotation;
+            var resultant = dif * transform.rotation;
 
-            return restulant;
+            return resultant;
         }
 
         public void OnGrab(HandType handType, Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation)

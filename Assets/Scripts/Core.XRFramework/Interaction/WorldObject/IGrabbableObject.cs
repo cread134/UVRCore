@@ -17,7 +17,7 @@ namespace Core.XRFramework.Interaction.WorldObject
         void GetGrabHandPosition(HandType handType, out Vector3 newPosition, out Quaternion newRotation);
         void UpdateCachedValues(HandType handType, Vector3 targetPosition, Vector3 upDirection, Quaternion targetRotation);
         void UpdateTransformState(HandType handType);
-        void SetOverride(IGrabOverrider grabOverride);
-        void ReleaseOverried();
+        void SetOverride(IGrabOverrider grabOverride, bool disableCollision = false);
+        void ReleaseOverride();
     }
 }

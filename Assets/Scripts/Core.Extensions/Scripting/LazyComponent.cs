@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Core.DevTools.Scripting
 {
+    /// <summary>
+    /// Load a component from a game object
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class LazyComponent<T> where T : Component
     {
         private T component;

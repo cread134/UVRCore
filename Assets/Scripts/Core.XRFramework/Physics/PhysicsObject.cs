@@ -83,6 +83,14 @@ namespace Core.XRFramework.Physics
             defaultCollisionSound?.PlaySound(transform.position);
         }
 
+        public bool CollisionActive
+        {
+            get => collisionActive; set
+            {
+                collisionActive = value;
+                PhysicsRigidbody.detectCollisions = value;
+            }
+        }
         #endregion
 
         #region force
@@ -97,6 +105,7 @@ namespace Core.XRFramework.Physics
 
         private Vector3 _torqueCache;
         private Vector3 _forceCache;
+        private bool collisionActive = true;
 
         public void AddForce(Vector3 force, ForceMode forceMode)
         {

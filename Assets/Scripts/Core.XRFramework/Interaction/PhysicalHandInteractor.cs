@@ -1,3 +1,4 @@
+using Core.Service.Physics;
 using Core.XRFramework.Context;
 using Core.XRFramework.Interaction.WorldObject;
 using Core.XRFramework.Physics;
@@ -135,10 +136,10 @@ namespace Core.XRFramework.Interaction
 
         void SetCollisionActive(bool active)
         {
-            var targetLayer = active ? 7 : 8;
+            var targetLayer = active ? LayerInfo.PlayerHands : LayerInfo.PlayerHandsHeld;
             foreach (var layerObject in LayerObjects)
             {
-                layerObject.layer = targetLayer;
+                layerObject.layer = (int)targetLayer;
             }
         }
 
@@ -165,7 +166,8 @@ namespace Core.XRFramework.Interaction
                         grabIndicator.SetActive(true);
                         var lookToCameraDirection = _camera.transform.position - newPosition;
                         grabIndicator.UpdateTransform(newPosition, transform.position, Quaternion.LookRotation(lookToCameraDirection, Vector3.up));
-                    } else
+                    } 
+                    else
                     {
                         grabIndicator.SetActive(false);
                         hoveredObject = null;

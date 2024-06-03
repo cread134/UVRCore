@@ -1,6 +1,6 @@
 {
-    "name": "Core.DevTools",
-    "rootNamespace": "Core.DevTools",
+    "name": "Core.Extensions",
+    "rootNamespace": "Core.Extensions",
     "references": [
         "GUID:343deaaf83e0cee4ca978e7df0b80d21"
     ],
