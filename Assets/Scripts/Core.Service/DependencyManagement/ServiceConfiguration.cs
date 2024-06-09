@@ -4,23 +4,18 @@ using Core.Service.Logging;
 
 namespace Core.Service.DependencyManagement
 {
-    internal class ServiceConfiguration
+    internal class ServiceConfiguration : IServiceConfigurator
     {
-        internal static void RegisterMonoBehaviours(ObjectFactory objectFactory)
+        public void ConfigureServices(ObjectFactory objectFactory)
         {
-            objectFactory.RegisterCore<IAppSettings>(AppSettings.Instance);
-            objectFactory.RegisterCore<IAudioService>(AudioService.Instance);
+            objectFactory.RegisterService<IAppSettings, AppSettings>();
+            objectFactory.RegisterService<IAudioService, AudioService>();
+            ConfigureLogging(objectFactory);
         }
 
-        internal static void RegisterServices()
+        void ConfigureLogging(ObjectFactory objectFactory)
         {
-        }
-
-        internal static ILoggingService ConfigureLogging(ObjectFactory objectFactory)
-        {
-            var instance = new LoggingService();
-            objectFactory.RegisterCore<ILoggingService>(instance);
-            return instance;
+            objectFactory.RegisterService<ILoggingService, LoggingService>();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Core.Service.Logging
     {
         public EventHandler<StructuredLog> OnLog { get; set; }
 
-        internal LoggingService()
+        public LoggingService()
         {
             UnityEngine.Application.logMessageReceived += ApplicationLogMessageReceived;
         }
@@ -47,7 +47,7 @@ namespace Core.Service.Logging
         public void PostLog(StructuredLog log)
         {
             var serializedLog = log.Serialize();
-            if (AppSettings.IsEditor)
+            if (UnityEngine.Application.isEditor)
             {
                 var context = log.TryGetPropertyValue("ObjectContext", out var objectContext) ? objectContext as UnityEngine.Object : null;
                 if (context == null)

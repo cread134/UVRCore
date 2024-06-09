@@ -21,8 +21,8 @@ namespace Core.XRFramework.Interaction.WorldObject
         PhysicsMover PhysicsMover => _physicsMover ??= new PhysicsMover(physicsConfiguration, _physicsObject.PhysicsRigidbody);
         PhysicsMover _physicsMover;
 
-        ILoggingService _loggingService;
-        ILoggingService LoggingService => _loggingService ??= ObjectFactory.ResolveService<ILoggingService>();
+
+        LazyService<ILoggingService> loggingService = new LazyService<ILoggingService>();
 
         bool IsTwoHanded => storedHandInformation[HandType.Right].IsGrabbing && storedHandInformation[HandType.Left].IsGrabbing;
         HandType _primaryGrabType;
@@ -227,7 +227,7 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         public void OnGrab(HandType handType, Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation)
         {
-            LoggingService.Log($"object grabbed with {handType} hand", context: this);
+            loggingService.Value.Log($"object grabbed with {handType} hand", context: this);
             var oppositeType = handType == HandType.Left ? HandType.Right : HandType.Left;
             if (storedHandInformation[oppositeType].IsGrabbing 
              && storedHandInformation[oppositeType].GrabPoint.priority >= storedHandInformation[handType].GrabPoint.priority)

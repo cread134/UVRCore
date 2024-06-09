@@ -5,6 +5,7 @@ namespace Core.Service.AudioManagement
     [CreateAssetMenu]
     public class GameSound : ScriptableObject
     {
+        public string SoundName;
         public AudioClip[] AudioClips;
 
         public float VolumeMultiplier = 1;

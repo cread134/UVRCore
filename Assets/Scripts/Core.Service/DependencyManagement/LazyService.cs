@@ -1,6 +1,6 @@
 ﻿namespace Core.Service.DependencyManagement
 {
-    public class LazyService<T> where T : IGameService
+    public class LazyService<T>
     {
         private T service;
 
@@ -14,7 +14,7 @@
             {
                 if (service == null)
                 {
-                    service = ObjectFactory.ResolveService<T>();
+                    service = ObjectFactory.Instance.GetService<T>();
                 }
                 return service;
             }

@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.XR;
 
 namespace Core.XRFramework
 {
-    internal class HapticsService : SingletonClass<HapticsService>, IHapticsService
+    internal class HapticsService : MonoBehaviour, IHapticsService
     {
         XrContext fContext;
         XrContext Context
@@ -25,10 +25,6 @@ namespace Core.XRFramework
             {
                 controller.SendHapticsImpulse(amplitude, duration);
             }
-        }
-
-        protected override void OnCreated()
-        {
         }
     }
 }

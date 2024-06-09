@@ -6,14 +6,11 @@ using UnityEngine;
 
 namespace Core.Service.Application
 {
-    internal class AppSettings : SingletonClass<AppSettings>, IAppSettings
+    internal class AppSettings : MonoBehaviour, IAppSettings
     {
-        public static bool IsEditor => Instance._isEditor;
-        bool _isEditor;
-
-        protected override void OnCreated()
+        [Inject]
+        public void Inject()
         {
-            _isEditor = UnityEngine.Application.isEditor;
         }
     }
 }

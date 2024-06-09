@@ -1,3 +1,4 @@
+using Core.Service.DependencyManagement;
 using Core.Service.Physics;
 using Core.XRFramework.Context;
 using Core.XRFramework.Interaction.WorldObject;
@@ -45,6 +46,8 @@ namespace Core.XRFramework.Interaction
         Rigidbody _rigidbody;
         XrContext _xrContext;
         Camera _camera;
+
+        LazyService<IHapticsService> hapticsService = new ();
 
         private void Awake()
         {
@@ -117,7 +120,7 @@ namespace Core.XRFramework.Interaction
             grabIndicator.SetActive(false);
             SetCollisionActive(false);
 
-            HapticsService.Instance?.SendHapticsImpulse(handType, interactionConfiguration.hapticGrabAmplitude, interactionConfiguration.hapticGrabDuration);
+            hapticsService.Value?.SendHapticsImpulse(handType, interactionConfiguration.hapticGrabAmplitude, interactionConfiguration.hapticGrabDuration);
         }
 
         private void ReleaseObject()
@@ -131,7 +134,7 @@ namespace Core.XRFramework.Interaction
             hoveredObject = null;
             _physicsMover.Reset();
 
-            HapticsService.Instance?.SendHapticsImpulse(handType, interactionConfiguration.hapticGrabAmplitude, interactionConfiguration.hapticGrabDuration);
+            hapticsService.Value?.SendHapticsImpulse(handType, interactionConfiguration.hapticGrabAmplitude, interactionConfiguration.hapticGrabDuration);
         }
 
         void SetCollisionActive(bool active)

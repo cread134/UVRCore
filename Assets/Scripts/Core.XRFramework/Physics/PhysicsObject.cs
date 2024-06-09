@@ -22,7 +22,7 @@ namespace Core.XRFramework.Physics
         [Header("Collision")]
         public GameSound defaultCollisionSound;
 
-        LazyService<IAudioService> AudioService = new LazyService<IAudioService>();
+        LazyService<IAudioService> audioService = new LazyService<IAudioService>();
 
         #region centreOfMass
         public Transform centreOfMassOverride;
@@ -80,7 +80,7 @@ namespace Core.XRFramework.Physics
 
         public virtual void OnCollide(Collision collision)
         {
-            defaultCollisionSound?.PlaySound(transform.position);
+            audioService.Value.PlaySound(defaultCollisionSound, transform.position);
         }
 
         public bool CollisionActive
