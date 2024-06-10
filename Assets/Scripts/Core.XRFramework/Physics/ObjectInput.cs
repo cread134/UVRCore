@@ -1,3 +1,5 @@
+using Core.Service.DependencyManagement;
+using Core.Service.Logging;
 using Core.Service.Physics;
 using UnityEngine;
 
@@ -6,6 +8,8 @@ namespace Core.XRFramework.Physics
     public class ObjectInput : MonoBehaviour, IGrabOverrider
     {
         [SerializeField] private Transform inputPoint;
+        [SerializeField] private Transform endPoint;
+
         [SerializeField] private float inputRadius = 0.01f;
         [SerializeField] private float inputDistance = 0.01f;
         [SerializeField] private LayerMaskConfiguration inputMask;
@@ -13,15 +17,32 @@ namespace Core.XRFramework.Physics
         [SerializeField] private float horizontalAngleAllowance = 25f;
         [SerializeField] private bool inputOpen = true;
 
+        [SerializeField] private GrabPoint[] blockingGrabPoints;
+
         private float startInputBuffer;
 
         IObjectInputSubscriber _subscriber;
+
+        LazyService<ILoggingService> loggingService = new();
+
+        void Update()
+        {
+            if (!IsInputting)
+            {
+                if (ShouldCheckForInput())
+                {
+                    CheckForInput();
+                }
+            }
+            else
+            {
+                CheckToEndInput();
+            }
+        }
+
         bool IsInputting
         {
-            get
-            {
-                return _subscriber != null;
-            }
+            get => _subscriber != null;
             set
             {
                 if (!value)
@@ -31,25 +52,33 @@ namespace Core.XRFramework.Physics
             }
         }
 
-        void Update()
+        bool ShouldCheckForInput()
         {
-            if (!IsInputting && inputOpen)
+            if (!inputOpen)
             {
-                CheckForInput();
-            } 
-            else
-            {
-                CheckToEndInput();
+                return false;
             }
+
+            if (blockingGrabPoints != null)
+            {
+                foreach (var grabPoint in blockingGrabPoints)
+                {
+                    if (grabPoint.IsGrabbed)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         RaycastHit[] inputHits = new RaycastHit[1];
         void CheckForInput()
         {
-            var rayHits = UnityEngine.Physics.SphereCastNonAlloc(inputPoint.position, inputRadius, inputPoint.forward, inputHits, 0.01f, inputMask.LayerMask, QueryTriggerInteraction.Ignore);
-            if (rayHits > 0 && inputHits[0].transform.gameObject.TryGetComponent(out IObjectInputSubscriber subscriber))
+            var rayHits = UnityEngine.Physics.SphereCastNonAlloc(inputPoint.position, inputRadius, inputPoint.forward, inputHits, 0.01f, inputMask.LayerMask, QueryTriggerInteraction.Collide);
+            if (rayHits > 0)
             {
-                if (IsValidInput(subscriber))
+                if (inputHits[0].transform.gameObject.TryGetComponent(out IObjectInputSubscriber subscriber) && IsValidInput(subscriber))
                 {
                     SetInput(subscriber);
                 }
@@ -58,6 +87,16 @@ namespace Core.XRFramework.Physics
 
         bool IsValidInput(IObjectInputSubscriber subscriber)
         {
+            if (subscriber == null)
+            {
+                return false;
+            }
+
+            if (subscriber.IsConnected)
+            {
+                return false;
+            }
+
             var distance = Vector3.Distance(subscriber.InputReferencePoint.position, inputPoint.position);
             if (distance > inputDistance)
             {
@@ -86,22 +125,45 @@ namespace Core.XRFramework.Physics
             _subscriber = subscriber;
             _subscriber.OnInputStart();
             _subscriber.AttachedGrab.SetOverride(this);
+
+            loggingService.Value.Log($"Input started for {_subscriber.AttachedGrab}");
         }
 
         public (Vector3, Quaternion) GetOverrideTransform(GrabOverrideRefValues refValues)
         {
+            Vector3 targetPosition = CalculateOverridePosition(refValues);
+            Quaternion targetRotation = CalculateOverrideRotation(refValues);
             return (refValues.BodyPosition, refValues.BodyRotation);
         }
 
+        private Vector3 CalculateOverridePosition(GrabOverrideRefValues refValues)
+        {
+            var betweenDirection = (endPoint.position - inputPoint.position);
+
+            var projectReference = _subscriber.InputReferencePoint.position + (refValues.TargetPosition - refValues.CurrentState.Position);
+            Debug.DrawLine(_subscriber.InputReferencePoint.position, projectReference, Color.blue);
+            var projectedTarget = _subscriber.InputReferencePoint.position + Vector3.Project(projectReference, betweenDirection);
+            Debug.DrawLine(_subscriber.InputReferencePoint.position, projectedTarget, Color.magenta);
+
+            return projectedTarget;
+        }
+
+        private Quaternion CalculateOverrideRotation(GrabOverrideRefValues refValues)
+        {
+            Quaternion C = _subscriber.InputReferencePoint.rotation * refValues.BodyRotation;
+            Quaternion D = C * refValues.BodyRotation;
+            return D;
+        }
         void CheckToEndInput()
         {
             if (_subscriber == null)
             {
                 return;
             }
-            var dot = Vector3.Dot(inputPoint.forward, _subscriber.InputReferencePoint.forward);
+
+            var endReferenceDot = Vector3.Dot(endPoint.position - inputPoint.position, endPoint.position - inputPoint.position);
             var distance = Vector3.Distance(_subscriber.InputReferencePoint.position, inputPoint.position);
-            if (distance > inputDistance + startInputBuffer && dot < 0.5f)
+            if (distance > inputDistance + startInputBuffer && endReferenceDot < 0.5f)
             {
                 ClearInput();
             }
@@ -115,6 +177,7 @@ namespace Core.XRFramework.Physics
             }
             _subscriber.OnInputEnd();
             _subscriber.AttachedGrab.ReleaseOverride();
+            loggingService.Value.Log($"Input ended for {_subscriber.AttachedGrab}");
             IsInputting = false;
         }
 
@@ -133,6 +196,17 @@ namespace Core.XRFramework.Physics
                 {
                     Gizmos.color = Color.red;
                     Gizmos.DrawLine(inputPoint.position, _subscriber.InputReferencePoint.position);
+                }
+
+                if (ShouldCheckForInput())
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawWireSphere(inputPoint.position, inputRadius);
+                }
+
+                if (endPoint != null)
+                {
+                    Gizmos.DrawLine(inputPoint.position, endPoint.position);
                 }
             }
         }

@@ -106,6 +106,12 @@ namespace Core.XRFramework.Interaction.WorldObject
             var targetPosition = cachedInformation.TargetPosition;
             var targetRotation = cachedInformation.TargetRotation;
 
+
+            var oppositeSide = _primaryGrabType != HandType.Left ? HandType.Left : HandType.Right;
+            var mainHandTarget = storedHandInformation[oppositeSide].TargetPosition;
+
+            Vector3 calculatedTargetPosition;
+            Quaternion calculatedRotation;
             if (IsTransformOverriden)
             {
                 var newValues = OnGrabOverrideUpdate(cachedInformation.TargetPosition,
@@ -113,17 +119,15 @@ namespace Core.XRFramework.Interaction.WorldObject
                                                      _physicsObject.PhysicsRigidbody.position,
                                                      _physicsObject.PhysicsRigidbody.rotation,
                                                      getTransform);
-                targetPosition = newValues.newTarget;
-                targetRotation = newValues.newTargetRotation;
+                calculatedTargetPosition = newValues.newTarget;
+                calculatedRotation = newValues.newTargetRotation;
             }
-
-
-            var oppositeSide = _primaryGrabType != HandType.Left ? HandType.Left : HandType.Right;
-            var mainHandTarget = storedHandInformation[oppositeSide].TargetPosition;
-
-            var calculatedTargetPosition = CalculatePositionalTarget(targetPosition, getTransform.Position);
-            var calculatedRotation = ShouldApplyTwoHandedRotation() ? CalculateTwoHandedRotation(mainHandTarget, oppositeSide) 
+            else
+            {
+                calculatedTargetPosition = CalculatePositionalTarget(targetPosition, getTransform.Position);
+                calculatedRotation = ShouldApplyTwoHandedRotation() ? CalculateTwoHandedRotation(mainHandTarget, oppositeSide)
                                                                     : CalculateRotationalTarget(targetRotation, getTransform.Rotation);
+            }
 
             PhysicsMover?.MatchTransform(calculatedTargetPosition, calculatedRotation, _physicsObject);
         }

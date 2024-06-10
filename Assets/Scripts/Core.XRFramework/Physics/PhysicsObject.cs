@@ -63,6 +63,10 @@ namespace Core.XRFramework.Physics
 
         public void ResetVelocity()
         {
+            if (PhysicsRigidbody.isKinematic)
+            {
+                return;
+            }
             PhysicsRigidbody.velocity = Vector3.zero;
             PhysicsRigidbody.angularVelocity = Vector3.zero;
         }

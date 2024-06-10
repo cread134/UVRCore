@@ -27,6 +27,10 @@ namespace Core.Service.AudioManagement
         Coroutine playCoroutine;
         public void PlaySound(GameSound gameSound, bool isLoop, AudioOverride? audioOverride = null)
         {
+            if (gameSound == null)
+            {
+                return;
+            }
             var targetClip = gameSound.AudioClips[UnityEngine.Random.Range(0, gameSound.AudioClips.Length)];
 
             audioOverride ??= AudioOverride.Default;

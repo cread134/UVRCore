@@ -7,6 +7,7 @@ namespace Core.XRFramework.Physics
     {
         public IGrabbableObject AttachedGrab { get; }
         public Transform InputReferencePoint { get; }
+        public bool IsConnected { get; }
 
         void OnInputEnd();
         public void OnInputStart();

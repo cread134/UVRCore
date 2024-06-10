@@ -1,20 +1,22 @@
 ﻿using Core.Service.Physics;
 using Core.Service.Scripting;
 using Core.XRFramework.Interaction.WorldObject;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Core.XRFramework.Physics
 {
     public class InputPoint : MonoBehaviour, IObjectInputSubscriber
     {
-        [SerializeField] private Transform inputPoint;
+        [SerializeField] private float inputRadius = 0.01f;
+        [SerializeField] private List<Collider> inputColliders;
 
         LazyParent<GrabbableObject> attachedGrab;
+        bool _isConnected;
 
+        public bool IsConnected => _isConnected;
         public IGrabbableObject AttachedGrab => attachedGrab.Value;
-        public Transform InputReferencePoint => inputPoint;
-
-        [SerializeField] private float inputRadius = 0.01f;
+        public Transform InputReferencePoint => transform;
 
         private void Awake()
         {
@@ -26,14 +28,28 @@ namespace Core.XRFramework.Physics
         {
             gameObject.layer = (int)LayerInfo.InputObject;
             var collider = gameObject.AddComponent<SphereCollider>();
+
+            collider.isTrigger = true;
+            var rb = gameObject.AddComponent<Rigidbody>();
+            rb.isKinematic = true;
             collider.radius = inputRadius;
         }
+
         public void OnInputStart()
         {
+            _isConnected = true;
+            EnableInputColliders(false);
         }
 
         public void OnInputEnd()
         {
+            _isConnected = false;
+            EnableInputColliders(true);
+        }
+
+        void EnableInputColliders(bool enable) 
+        { 
+            inputColliders.ForEach(x => x.enabled = enable);
         }
 
         #region Debug

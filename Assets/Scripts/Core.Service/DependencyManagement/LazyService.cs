@@ -16,6 +16,10 @@
                 {
                     service = ObjectFactory.Instance.GetService<T>();
                 }
+                if (service == null)
+                {
+                    throw new System.Exception($"Service {typeof(T).Name} not found");
+                }
                 return service;
             }
         }

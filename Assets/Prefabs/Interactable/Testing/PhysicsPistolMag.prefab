@@ -46,7 +46,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1776844491670659167}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 0.3
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -312,13 +312,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6638280447083847496}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.64652216, y: -0, z: -0, w: 0.7628952}
-  m_LocalPosition: {x: 0, y: 0.03288, z: 0.01581}
+  m_LocalRotation: {x: 0.79080147, y: -0.0074473023, z: 0.04616227, w: 0.6102841}
+  m_LocalPosition: {x: -0.0002, y: 0.0361, z: 0.0166}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 207061873934802009}
-  m_LocalEulerAnglesHint: {x: -80.56, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 105.002, y: -14.2960205, z: -9.912994}
 --- !u!114 &2365600873785622766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,8 +331,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0b36d843bdc08f4eb78f65f083424d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputPoint: {fileID: 0}
   inputRadius: 0.01
+  inputColliders:
+  - {fileID: 8139371821249510540}
 --- !u!1 &7760795942521833233
 GameObject:
   m_ObjectHideFlags: 0
