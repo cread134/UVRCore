@@ -1,3 +1,4 @@
+using Core.DevTools.Scripting;
 using Core.XRFramework.Interaction;
 using Core.XRFramework.Interaction.WorldObject;
 using System;
@@ -82,26 +83,29 @@ namespace Core.XRFramework
 
         private void OnDrawGizmos()
         {
-            var semiTransparentColor = handType == HandType.Left ? new Color(1, 0, 0, 0.3f) : new Color(0, 0, 1, 0.3f);
-            var solidColor = handType == HandType.Left ? new Color(1, 0, 0, 1) : new Color(0, 0, 1, 1);
-            Gizmos.color = semiTransparentColor;
-            Gizmos.DrawWireSphere(transform.position, maxGrabDistance);
-            Gizmos.color = solidColor;
-            Gizmos.DrawSphere(transform.position, 0.005f);
+            GizmoGroup.Scope(GizmoGroup.GroupType.ComponentIndicators, () =>
+            {
+                var semiTransparentColor = handType == HandType.Left ? new Color(1, 0, 0, 0.3f) : new Color(0, 0, 1, 0.3f);
+                var solidColor = handType == HandType.Left ? new Color(1, 0, 0, 1) : new Color(0, 0, 1, 1);
+                Gizmos.color = semiTransparentColor;
+                Gizmos.DrawWireSphere(transform.position, maxGrabDistance);
+                Gizmos.color = solidColor;
+                Gizmos.DrawSphere(transform.position, 0.005f);
 
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(transform.position, transform.position + transform.forward * 0.02f);
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(transform.position, transform.position + transform.up * 0.02f);
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, transform.position + transform.right * 0.01f);
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(transform.position, transform.position + transform.forward * 0.02f);
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(transform.position, transform.position + transform.up * 0.02f);
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(transform.position, transform.position + transform.right * 0.01f);
 
-            var label = $"{handType} {maxGrabDistance}";
-            var labelOffset = new Vector3(0, 0.01f, 0);
-            Handles.Label(transform.position + labelOffset, label);
-            Gizmos.DrawIcon(transform.position, "emptygizmo.png", true);
+                var label = $"{handType} {maxGrabDistance}";
+                var labelOffset = new Vector3(0, 0.01f, 0);
+                Handles.Label(transform.position + labelOffset, label);
+                Gizmos.DrawIcon(transform.position, "emptygizmo.png", true);
 
-            DrawAddGizmos();
+                DrawAddGizmos();
+            });
         }
 
         protected virtual void DrawAddGizmos()

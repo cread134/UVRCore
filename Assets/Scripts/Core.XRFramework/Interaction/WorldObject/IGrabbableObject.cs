@@ -1,4 +1,5 @@
 ﻿using Core.XRFramework.Physics;
+using System;
 using UnityEngine;
 
 namespace Core.XRFramework.Interaction.WorldObject
@@ -6,6 +7,8 @@ namespace Core.XRFramework.Interaction.WorldObject
     public interface IGrabbableObject
     {
         Transform Transform { get; }
+        PhysicsObject PhysicsObject { get; }
+        EventHandler ReleaseRequested { get; set; }
         bool IsTransformOverriden { get; }
 
         bool CanGrab();
@@ -19,5 +22,6 @@ namespace Core.XRFramework.Interaction.WorldObject
         void UpdateTransformState(HandType handType);
         void SetOverride(IGrabOverrider grabOverride, bool disableCollision = false);
         void ReleaseOverride();
+        void DoRelease();
     }
 }

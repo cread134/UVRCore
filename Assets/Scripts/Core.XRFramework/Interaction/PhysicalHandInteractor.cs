@@ -110,9 +110,19 @@ namespace Core.XRFramework.Interaction
             }
         }
 
+        public void OnReleaseRequested(object grabbableObject, EventArgs e)
+        {
+            if (grabbedObject == grabbableObject)
+            {
+                TryRelease();
+            }
+        }
+
         private void GrabObject()
         {
             grabbedObject = hoveredObject;
+            grabbedObject.ReleaseRequested += OnReleaseRequested;
+
             hoveredObject = null;
             _isGrabbingObject = true;
             grabbedObject.OnGrab(handType, interactionPoint.position, interactionPoint.up, _rigidbody.rotation);
@@ -125,6 +135,8 @@ namespace Core.XRFramework.Interaction
 
         private void ReleaseObject()
         {
+            grabbedObject.ReleaseRequested -= OnReleaseRequested;
+
             _isGrabbingObject = false;
             grabbedObject.OnRelease(handType, interactionPoint.position, _rigidbody.rotation);
             _rigidbody.isKinematic = false;

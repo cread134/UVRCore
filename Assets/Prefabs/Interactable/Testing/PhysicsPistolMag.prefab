@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4497093939626483158}
   - component: {fileID: 8598101411612579530}
   - component: {fileID: 2664651499813967375}
+  - component: {fileID: 1521247191248453680}
   m_Layer: 9
   m_Name: PhysicsPistolMag
   m_TagString: Untagged
@@ -93,6 +94,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   physicsConfiguration: {fileID: 11400000, guid: 0cbb06f63052d2e45b05faf66c0a0474, type: 2}
+--- !u!114 &1521247191248453680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776844491670659167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b94ea6a27f42ecf47b8f182644b2a0c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Configuration: {fileID: 11400000, guid: cdfd5e5e99a14ad4ea0abe3f6ef2fcc2, type: 2}
 --- !u!1 &3680457183341136224
 GameObject:
   m_ObjectHideFlags: 0

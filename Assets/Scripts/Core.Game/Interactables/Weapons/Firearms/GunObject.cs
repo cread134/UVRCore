@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Core.Game
+namespace Core.Game.Interactables.Weapons.Firearms
 {
     [RequireComponent(typeof(PhysicsObject))]
     public class GunObject : MonoBehaviour

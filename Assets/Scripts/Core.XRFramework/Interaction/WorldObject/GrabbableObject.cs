@@ -1,9 +1,11 @@
 using Core.Service.DependencyManagement;
 using Core.Service.Logging;
 using Core.XRFramework.Physics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Core.XRFramework.Interaction.WorldObject
 {
@@ -15,6 +17,7 @@ namespace Core.XRFramework.Interaction.WorldObject
         private GrabPointGroup[] grabPointGroups = new GrabPointGroup[0];
 
         public Transform Transform => transform;
+        public PhysicsObject PhysicsObject => _physicsObject;
 
         PhysicsObject _physicsObject;
 
@@ -24,9 +27,14 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         LazyService<ILoggingService> loggingService = new LazyService<ILoggingService>();
 
-        bool IsTwoHanded => storedHandInformation[HandType.Right].IsGrabbing && storedHandInformation[HandType.Left].IsGrabbing;
+        public bool IsTwoHanded => storedHandInformation[HandType.Right].IsGrabbing && storedHandInformation[HandType.Left].IsGrabbing;
+        public bool IsBeingGrabbed { get; private set; }
+
         HandType _primaryGrabType;
         Dictionary<HandType, CachedHandInformation> storedHandInformation = new Dictionary<HandType, CachedHandInformation>();
+
+        [HideInInspector]
+        public EventHandler ReleaseRequested { get; set; }
 
         private void Awake()
         {
@@ -225,12 +233,13 @@ namespace Core.XRFramework.Interaction.WorldObject
             var upDirection = Vector3.Lerp(storedHandInformation[_primaryGrabType].TargetUpVector, storedHandInformation[oppositeSide].TargetUpVector, mainHandUpInfluence);
             var dif = Quaternion.LookRotation(targetVector, upDirection) * Quaternion.Inverse(Quaternion.LookRotation(betweenVector, mainGrabPoint.UpDirection));
             var resultant = dif * transform.rotation;
-
+            Debug.DrawLine(mainGrabPoint.Position, mainGrabPoint.Position + targetVector, Color.red);
             return resultant;
         }
 
         public void OnGrab(HandType handType, Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation)
         {
+            IsBeingGrabbed = true;
             loggingService.Value.Log($"object grabbed with {handType} hand", context: this);
             var oppositeType = handType == HandType.Left ? HandType.Right : HandType.Left;
             if (storedHandInformation[oppositeType].IsGrabbing 
@@ -251,6 +260,7 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         public void OnRelease(HandType handType, Vector3 referencePosition, Quaternion referenceRotation)
         {
+            IsBeingGrabbed = false;
             var oppositeType = handType == HandType.Left ? HandType.Right : HandType.Left;
             if (IsTwoHanded)
             {
@@ -267,6 +277,14 @@ namespace Core.XRFramework.Interaction.WorldObject
         public bool CanGrab()
         {
             return true;
+        }
+
+        public void DoRelease()
+        {
+            if (IsBeingGrabbed)
+            {
+                ReleaseRequested?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         #region inputTransmission

@@ -29,6 +29,9 @@ namespace Core.XrFramework.Toolbars
             if (goTarget != null)
             {
                 root.AddHeader("Point controls");
+                var data = @$"Hand type: {goTarget.handType}
+IsGrabbed: {goTarget.IsGrabbed}";
+                root.Add(new Label(data));
                 root.AddButton("Grab point", () => SelectGrabPoint(goTarget));
             }
             return root;

@@ -97,6 +97,29 @@ namespace Core.XRFramework.Physics
         }
         #endregion
 
+        #region Binding
+
+        Dictionary<PhysicsObject, PhysicsBinding> _bindings = new Dictionary<PhysicsObject, PhysicsBinding>();
+
+        public void Bind(PhysicsObject bindingTarget)
+        {
+            if (!_bindings.ContainsKey(bindingTarget))
+            {
+                _bindings.Add(bindingTarget, new PhysicsBinding(this, bindingTarget));
+            }
+        }
+
+        public void ReleaseBinding(PhysicsObject bindingTarget)
+        {
+            if (_bindings.ContainsKey(bindingTarget))
+            {
+                _bindings[bindingTarget].Break();
+                _bindings.Remove(bindingTarget);
+            }
+        }
+
+        #endregion
+
         #region force
         void UpdateForce()
         {

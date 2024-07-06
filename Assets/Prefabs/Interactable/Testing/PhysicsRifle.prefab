@@ -140,7 +140,7 @@ MonoBehaviour:
   handType: 1
   maxGrabDistance: 0.05
   requiredMatchAngle: 35
-  priority: 1
+  priority: 2
   blockers: []
 --- !u!1 &4001749331554312679
 GameObject:
@@ -300,7 +300,7 @@ MonoBehaviour:
   handType: 0
   maxGrabDistance: 0.05
   requiredMatchAngle: 35
-  priority: 1
+  priority: 2
   blockers: []
 --- !u!1 &6802555403755787483
 GameObject:
@@ -448,6 +448,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   physicsConfiguration: {fileID: 11400000, guid: 0cbb06f63052d2e45b05faf66c0a0474, type: 2}
+  ReleaseRequested:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7667658143319603738
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,12 +1,16 @@
 using Core.Service.DependencyManagement;
 using Core.Service.Logging;
 using Core.Service.Physics;
+using Core.XRFramework.Interaction.WorldObject;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Core.XRFramework.Physics
 {
     public class ObjectInput : MonoBehaviour, IGrabOverrider
     {
+        public GrabbableObject ParentGrab;
+
         [SerializeField] private Transform inputPoint;
         [SerializeField] private Transform endPoint;
 
@@ -18,6 +22,11 @@ namespace Core.XRFramework.Physics
         [SerializeField] private bool inputOpen = true;
 
         [SerializeField] private GrabPoint[] blockingGrabPoints;
+
+        [Header("Events")]
+        public UnityEvent OnInputStart = new();
+        public UnityEvent OnInputEnd = new();
+        public UnityEvent OnComplete = new();
 
         private float startInputBuffer;
 
@@ -127,23 +136,26 @@ namespace Core.XRFramework.Physics
             _subscriber.AttachedGrab.SetOverride(this);
 
             loggingService.Value.Log($"Input started for {_subscriber.AttachedGrab}");
+            OnInputStart.Invoke();
         }
 
         public (Vector3, Quaternion) GetOverrideTransform(GrabOverrideRefValues refValues)
         {
             Vector3 targetPosition = CalculateOverridePosition(refValues);
             Quaternion targetRotation = CalculateOverrideRotation(refValues);
-            return (refValues.BodyPosition, refValues.BodyRotation);
+            return (targetPosition, refValues.BodyRotation);
         }
 
         private Vector3 CalculateOverridePosition(GrabOverrideRefValues refValues)
         {
             var betweenDirection = (endPoint.position - inputPoint.position);
 
-            var projectReference = _subscriber.InputReferencePoint.position + (refValues.TargetPosition - refValues.CurrentState.Position);
+            var projectDirection = (refValues.TargetPosition - refValues.CurrentState.Position);
+            var projectReference = _subscriber.InputReferencePoint.position + projectDirection;
             Debug.DrawLine(_subscriber.InputReferencePoint.position, projectReference, Color.blue);
-            var projectedTarget = _subscriber.InputReferencePoint.position + Vector3.Project(projectReference, betweenDirection);
-            Debug.DrawLine(_subscriber.InputReferencePoint.position, projectedTarget, Color.magenta);
+            var projectedVector = Vector3.Project(projectDirection, betweenDirection);
+            var projectedTarget = refValues.BodyPosition + projectedVector;
+            Debug.DrawLine(refValues.BodyPosition, projectedTarget, Color.magenta);
 
             return projectedTarget;
         }
@@ -161,12 +173,23 @@ namespace Core.XRFramework.Physics
                 return;
             }
 
-            var endReferenceDot = Vector3.Dot(endPoint.position - inputPoint.position, endPoint.position - inputPoint.position);
+            var endReferenceDot = Vector3.Dot(endPoint.position - inputPoint.position, _subscriber.InputReferencePoint.position - inputPoint.position);
             var distance = Vector3.Distance(_subscriber.InputReferencePoint.position, inputPoint.position);
-            if (distance > inputDistance + startInputBuffer && endReferenceDot < 0.5f)
+            if (distance > inputDistance + startInputBuffer && endReferenceDot < 0f)
             {
                 ClearInput();
+            } 
+            else if (distance > Vector3.Distance(endPoint.position, inputPoint.position))
+            {
+                OnCompleteInput();
             }
+        }
+
+        void OnCompleteInput()
+        {
+            _subscriber.AttachedGrab.DoRelease();
+            ParentGrab.PhysicsObject.Bind(_subscriber.AttachedGrab.PhysicsObject);
+            OnComplete.Invoke();
         }
 
         void ClearInput()
@@ -179,6 +202,7 @@ namespace Core.XRFramework.Physics
             _subscriber.AttachedGrab.ReleaseOverride();
             loggingService.Value.Log($"Input ended for {_subscriber.AttachedGrab}");
             IsInputting = false;
+            OnInputEnd.Invoke();
         }
 
 
