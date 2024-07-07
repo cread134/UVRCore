@@ -148,7 +148,7 @@ namespace Core.XRFramework.Physics
         {
             Vector3 targetPosition = CalculateOverridePosition(refValues);
             Quaternion targetRotation = CalculateOverrideRotation(refValues);
-            return (targetPosition, refValues.BodyRotation);
+            return (targetPosition, targetRotation);
         }
 
         private Vector3 CalculateOverridePosition(GrabOverrideRefValues refValues)
@@ -167,7 +167,10 @@ namespace Core.XRFramework.Physics
 
         private Quaternion CalculateOverrideRotation(GrabOverrideRefValues refValues)
         {
-            Quaternion C = _subscriber.InputReferencePoint.rotation * refValues.BodyRotation;
+            var distanceBetweenInputAndStart = Vector3.Distance(_subscriber.InputReferencePoint.position, inputPoint.position);
+            var lerpBetweenRotations = Quaternion.Lerp(inputPoint.rotation, endPoint.rotation, distanceBetweenInputAndStart / inputDistance);
+
+            Quaternion C = inputPoint.rotation * Quaternion.Inverse(_subscriber.InputReferencePoint.rotation);
             Quaternion D = C * refValues.BodyRotation;
             return D;
         }

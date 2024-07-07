@@ -20,6 +20,7 @@ namespace Core.Game.Interactables.Weapons.Firearms
         public GunConfiguration gunConfiguration;
         public Transform barrelReference;
 
+        bool shootInputDown = false;
         private void Awake()
         {
             physicsObject = new LazyComponent<PhysicsObject>(gameObject);
@@ -32,12 +33,19 @@ namespace Core.Game.Interactables.Weapons.Firearms
                 return;
             if (grabPoint.IsGrabbed == false)
                 return;
+
+            shootInputDown = true;
             Shoot();
+        }
+
+        public void ShootInputUp(HandType handType, GrabPoint grabPoint)
+        {
+            shootInputDown = false;
         }
 
         void Shoot()
         {
-            loggingService.Value.Log("Gun shoot performed", LogLevel.Info, this);
+            Debug.Log("Gun shoot performed", this);
             DoRecoil();
             PlayShootSound();
         }
@@ -51,6 +59,10 @@ namespace Core.Game.Interactables.Weapons.Firearms
         }
 
         void PlayShootSound()
+        {
+        }
+
+        public void ReleaseAmmunition()
         {
 
         }
