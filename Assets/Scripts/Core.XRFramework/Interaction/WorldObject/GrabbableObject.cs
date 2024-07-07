@@ -29,6 +29,7 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         public bool IsTwoHanded => storedHandInformation[HandType.Right].IsGrabbing && storedHandInformation[HandType.Left].IsGrabbing;
         public bool IsBeingGrabbed { get; private set; }
+        public bool IsHovered { get; private set; }
 
         HandType _primaryGrabType;
         Dictionary<HandType, CachedHandInformation> storedHandInformation = new Dictionary<HandType, CachedHandInformation>();
@@ -59,10 +60,12 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         public void OnHoverEnter()
         {
+            IsHovered = true;
         }
 
         public void OnHoverExit()
         {
+            IsHovered = false;
         }
 
         public bool TryGetGrab(HandType handType, Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation, out Vector3 newPosition, out Quaternion newRotation)

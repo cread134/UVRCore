@@ -1,3 +1,4 @@
+using Core.DevTools.Scripting;
 using Core.DevTools.UI;
 using Core.XRFramework;
 using Core.XRFramework.Context;
@@ -9,31 +10,17 @@ using UnityEngine.UIElements;
 namespace Core.XrFramework.Toolbars
 {
     [Overlay(typeof(SceneView), "GrabPointControls", true)]
-    public class GrabPointControlOverlay : Overlay
+    public class GrabPointControlOverlay : ContextualOverlay<GrabPoint>
     {
-        public override void OnCreated()
-        {
-            Selection.selectionChanged += OnObjectSelected;
-        }
-
-        public override void OnWillBeDestroyed()
-        {
-            Selection.selectionChanged -= OnObjectSelected;
-        }
-
-        public override VisualElement CreatePanelContent()
+        public override VisualElement GetContent(GrabPoint contextualObject)
         {
             VisualElement root = new VisualElement { name = "ObjectControls" };
-
-            var goTarget = Selection.activeGameObject?.GetComponent<GrabPoint>();
-            if (goTarget != null)
-            {
-                root.AddHeader("Point controls");
-                var data = @$"Hand type: {goTarget.handType}
-IsGrabbed: {goTarget.IsGrabbed}";
-                root.Add(new Label(data));
-                root.AddButton("Grab point", () => SelectGrabPoint(goTarget));
-            }
+            root.AddHeader("Point controls");
+            var data = @$"
+Hand type: {contextualObject.handType}
+IsGrabbed: {contextualObject.IsGrabbed}";
+            root.Add(new Label(data));
+            root.AddButton("Grab point", () => SelectGrabPoint(contextualObject));
             return root;
         }
 
@@ -61,28 +48,6 @@ IsGrabbed: {goTarget.IsGrabbed}";
                         Selection.activeGameObject = conroller.gameObject;
                     }
                 }
-            }
-        }
-
-        bool validSelection;
-        void OnObjectSelected()
-        {
-            var selectedGameObject = Selection.activeGameObject;
-            if (selectedGameObject != null && selectedGameObject.TryGetComponent(out GrabPoint go))
-            {
-                if (validSelection == false)
-                {
-                    this.Redraw();
-                }
-                validSelection = true;
-            }
-            else
-            {
-                if (validSelection == true)
-                {
-                    this.Redraw();
-                }
-                validSelection = false;
             }
         }
     }

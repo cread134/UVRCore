@@ -9,6 +9,7 @@ namespace Core.XRFramework.Physics
 {
     public class ObjectInput : MonoBehaviour, IGrabOverrider
     {
+        [Header("Input Settings")]
         public GrabbableObject ParentGrab;
 
         [SerializeField] private Transform inputPoint;
@@ -27,6 +28,10 @@ namespace Core.XRFramework.Physics
         public UnityEvent OnInputStart = new();
         public UnityEvent OnInputEnd = new();
         public UnityEvent OnComplete = new();
+
+        [Header("Binding Settings")]
+        [SerializeField] private bool bindOnComplete = true;
+        [SerializeField] private bool releaseOnComplete = true;
 
         private float startInputBuffer;
 
@@ -187,8 +192,14 @@ namespace Core.XRFramework.Physics
 
         void OnCompleteInput()
         {
-            _subscriber.AttachedGrab.DoRelease();
-            ParentGrab.PhysicsObject.Bind(_subscriber.AttachedGrab.PhysicsObject);
+            if (releaseOnComplete)
+            {
+                _subscriber.AttachedGrab.DoRelease();
+            }
+            if (bindOnComplete)
+            {
+                ParentGrab.PhysicsObject.Bind(_subscriber.AttachedGrab.PhysicsObject);
+            }
             OnComplete.Invoke();
         }
 

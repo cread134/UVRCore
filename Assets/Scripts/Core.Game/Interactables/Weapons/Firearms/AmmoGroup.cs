@@ -6,7 +6,8 @@ namespace Core.Game.Interactables.Weapons.Firearms
     public class AmmoGroup : MonoBehaviour
     {
         public AmmoGroupConfiguration Configuration;
-        public int Quantity { get; private set; }
+        public int Quantity { get => quantity; set => quantity = value; }
+        int quantity = 0;
 
         private void Awake()
         {
@@ -17,6 +18,7 @@ namespace Core.Game.Interactables.Weapons.Firearms
         private void OnDrawGizmos()
         {
             if (Configuration == null) return;
+
             Vector3 position = transform.position + Vector3.up * 0.01f;
             Handles.Label(position, $"Ammo: {Quantity}/{Configuration.MaxQuantity}");
         }
