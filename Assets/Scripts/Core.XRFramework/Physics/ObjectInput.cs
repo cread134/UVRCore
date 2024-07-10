@@ -32,6 +32,7 @@ namespace Core.XRFramework.Physics
         [Header("Binding Settings")]
         [SerializeField] private bool bindOnComplete = true;
         [SerializeField] private bool releaseOnComplete = true;
+        [SerializeField] private GrabPoint[] disableOnBindGrabPoints = new GrabPoint[0];
 
         private float startInputBuffer;
 
@@ -174,6 +175,7 @@ namespace Core.XRFramework.Physics
             Quaternion D = C * refValues.BodyRotation;
             return D;
         }
+
         void CheckToEndInput()
         {
             if (_subscriber == null)
@@ -203,6 +205,7 @@ namespace Core.XRFramework.Physics
             {
                 ParentGrab.PhysicsObject.Bind(_subscriber.AttachedGrab.PhysicsObject);
             }
+            DisableBindedGrabPoints(true);
             OnComplete.Invoke();
         }
 
@@ -215,10 +218,23 @@ namespace Core.XRFramework.Physics
             _subscriber.OnInputEnd();
             _subscriber.AttachedGrab.ReleaseOverride();
             loggingService.Value.Log($"Input ended for {_subscriber.AttachedGrab}");
+            DisableBindedGrabPoints(false);
             IsInputting = false;
             OnInputEnd.Invoke();
         }
 
+        public void ReleaseInput()
+        {
+            ClearInput();
+        }
+
+        void DisableBindedGrabPoints(bool active)
+        {
+            foreach (var item in disableOnBindGrabPoints)
+            {
+                item.DisableGrab = !active;
+            }
+        }
 
         #region Debug
         private void OnDrawGizmos()

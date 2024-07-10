@@ -37,6 +37,7 @@ namespace Core.XRFramework
 
         public bool IsGrabbed { get; set; }
         public HandType HandType { get; set; }
+        public bool DisableGrab { get; set; }
 
         public virtual void OnGrabbed(HandType handType, Vector3 referencePosition, Quaternion referenceRotation)
         {
@@ -44,6 +45,11 @@ namespace Core.XRFramework
 
         public bool CanGrabPoint(Vector3 referencePosition, Quaternion referenceRotation, out float priority)
         {
+            if (DisableGrab)
+            {
+                priority = Mathf.NegativeInfinity;
+                return false;
+            }
             if (IsGrabbed)
             {
                 priority = Mathf.NegativeInfinity;

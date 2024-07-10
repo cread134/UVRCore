@@ -20,6 +20,8 @@ namespace Core.Game.Interactables.Weapons.Firearms
         public GunConfiguration gunConfiguration;
         public Transform barrelReference;
 
+        public ObjectInput ammunitionInput;
+
         bool shootInputDown = false;
         private void Awake()
         {
@@ -64,7 +66,10 @@ namespace Core.Game.Interactables.Weapons.Firearms
 
         public void ReleaseAmmunition()
         {
-
+            if (ammunitionInput != null)
+            {
+                ammunitionInput.ReleaseInput();
+            }
         }
 
         #region Debug
