@@ -21,7 +21,7 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         PhysicsObject _physicsObject;
 
-        PhysicsMover PhysicsMover => _physicsMover ??= new PhysicsMover(physicsConfiguration, _physicsObject.PhysicsRigidbody);
+        public PhysicsMover PhysicsMover => _physicsMover ??= new PhysicsMover(physicsConfiguration, _physicsObject.PhysicsRigidbody);
         PhysicsMover _physicsMover;
 
 
@@ -140,7 +140,7 @@ namespace Core.XRFramework.Interaction.WorldObject
                                                                     : CalculateRotationalTarget(targetRotation, getTransform.Rotation);
             }
 
-            PhysicsMover?.MatchTransform(calculatedTargetPosition, calculatedRotation, _physicsObject);
+            PhysicsMover.MatchTransform(calculatedTargetPosition, calculatedRotation, _physicsObject);
         }
 
         #region override

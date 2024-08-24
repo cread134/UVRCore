@@ -29,6 +29,8 @@ namespace Core.XRFramework.Physics
         public UnityEvent OnInputEnd = new();
         public UnityEvent OnComplete = new();
 
+        bool isBound = false;
+
         [Header("Binding Settings")]
         [SerializeField] private bool bindOnComplete = true;
         [SerializeField] private bool releaseOnComplete = true;
@@ -55,17 +57,7 @@ namespace Core.XRFramework.Physics
             }
         }
 
-        bool IsInputting
-        {
-            get => _subscriber != null;
-            set
-            {
-                if (!value)
-                {
-                    _subscriber = null;
-                }
-            }
-        }
+        bool IsInputting { get; set; } = false;
 
         bool ShouldCheckForInput()
         {
@@ -137,6 +129,7 @@ namespace Core.XRFramework.Physics
         {
             var dist = Vector3.Distance(subscriber.InputReferencePoint.position, inputPoint.position);
             startInputBuffer = dist + (dist * 0.1f); // 10% buffer for input start
+            IsInputting = true;
             _subscriber = subscriber;
             _subscriber.OnInputStart();
             _subscriber.AttachedGrab.SetOverride(this);
@@ -157,20 +150,22 @@ namespace Core.XRFramework.Physics
             var betweenDirection = (endPoint.position - inputPoint.position);
 
             var projectDirection = (refValues.TargetPosition - refValues.CurrentState.Position);
-            var projectReference = _subscriber.InputReferencePoint.position + projectDirection;
-            Debug.DrawLine(_subscriber.InputReferencePoint.position, projectReference, Color.blue);
-            var projectedVector = Vector3.Project(projectDirection, betweenDirection);
-            var projectedTarget = refValues.BodyPosition + projectedVector;
-            Debug.DrawLine(refValues.BodyPosition, projectedTarget, Color.magenta);
+            var projectedReferencePoint = Vector3.Project(projectDirection, betweenDirection);
 
+            var betweenEndAndBody = (endPoint.position - refValues.BodyPosition);
+            var projectedEnd = Vector3.Project(betweenEndAndBody, betweenDirection);
+            var differenceToProjectedEnd = betweenEndAndBody - projectedEnd;
+
+            Debug.DrawLine(refValues.BodyPosition, refValues.BodyPosition + differenceToProjectedEnd, Color.blue);
+
+            var projectedTarget = refValues.BodyPosition + differenceToProjectedEnd + projectedReferencePoint;
+
+            Debug.DrawLine(refValues.BodyPosition, projectedTarget, Color.magenta);
             return projectedTarget;
         }
 
         private Quaternion CalculateOverrideRotation(GrabOverrideRefValues refValues)
         {
-            var distanceBetweenInputAndStart = Vector3.Distance(_subscriber.InputReferencePoint.position, inputPoint.position);
-            var lerpBetweenRotations = Quaternion.Lerp(inputPoint.rotation, endPoint.rotation, distanceBetweenInputAndStart / inputDistance);
-
             Quaternion C = inputPoint.rotation * Quaternion.Inverse(_subscriber.InputReferencePoint.rotation);
             Quaternion D = C * refValues.BodyRotation;
             return D;
@@ -203,12 +198,15 @@ namespace Core.XRFramework.Physics
             }
             if (bindOnComplete)
             {
-                ParentGrab.PhysicsObject.Bind(_subscriber.AttachedGrab.PhysicsObject);
+                Bind();
             }
             DisableBindedGrabPoints(true);
             OnComplete.Invoke();
         }
 
+        /// <summary>
+        /// When input object is out of input zone
+        /// </summary>
         void ClearInput()
         {
             if (!IsInputting)
@@ -219,15 +217,23 @@ namespace Core.XRFramework.Physics
             _subscriber.AttachedGrab.ReleaseOverride();
             loggingService.Value.Log($"Input ended for {_subscriber.AttachedGrab}");
             DisableBindedGrabPoints(false);
+            isBound = false;
             IsInputting = false;
+            _subscriber = null;
             OnInputEnd.Invoke();
         }
 
+        /// <summary>
+        /// For releasing from binding
+        /// </summary>
         public void ReleaseInput()
         {
-            ClearInput();
+            DisableBindedGrabPoints(false);
+            UnBind();
+            IsInputting = true;
         }
 
+        #region Binding
         void DisableBindedGrabPoints(bool active)
         {
             foreach (var item in disableOnBindGrabPoints)
@@ -235,6 +241,25 @@ namespace Core.XRFramework.Physics
                 item.DisableGrab = !active;
             }
         }
+
+        /// <summary>
+        /// For attaching object to parent
+        /// </summary>
+        void Bind()
+        {
+            isBound = true;
+        }
+
+        void UnBind()
+        {
+            if (isBound)
+            {
+                ParentGrab.PhysicsObject.ReleaseBinding(_subscriber.AttachedGrab.PhysicsObject);
+                isBound = false;
+            }
+        }
+
+        #endregion
 
         #region Debug
         private void OnDrawGizmos()

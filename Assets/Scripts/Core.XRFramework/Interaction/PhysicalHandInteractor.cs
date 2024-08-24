@@ -286,8 +286,13 @@ namespace Core.XRFramework.Interaction
         #endregion
 
         #region Debug
+        bool doDrawGizmos = false;
         private void OnDrawGizmos()
         {
+            if (!doDrawGizmos)
+            {
+                return;
+            }
             if (!ValidateDebug()) return;
             var gripColor = Color.Lerp(Color.red, Color.green, handController.GripValue);
             gripColor.a = 0.3f;
