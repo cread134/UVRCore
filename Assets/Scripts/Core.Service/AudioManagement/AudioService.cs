@@ -1,20 +1,14 @@
 using Core.Service.DependencyManagement;
-using Core.Service.Logging;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Plastic.Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace Core.Service.AudioManagement
 {
     internal class AudioService : MonoBehaviour, IAudioService
     {
-        ILoggingService _loggingService;
-
         [Inject]
-        public void Inject(ILoggingService loggingService)
+        public void Inject()
         {
-            _loggingService = loggingService;
             CreatePool();
         }
 
@@ -47,7 +41,7 @@ namespace Core.Service.AudioManagement
             if (_isInitialized == false)
                 return null;
 
-            _loggingService.Log($"Playing sound {gameSound}");
+            Debug.Log($"Playing sound {gameSound}");
 
             position ??= Vector3.zero;
             rotation ??= Quaternion.identity;

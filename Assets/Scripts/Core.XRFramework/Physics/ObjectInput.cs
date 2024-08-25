@@ -248,6 +248,7 @@ namespace Core.XRFramework.Physics
         void Bind()
         {
             isBound = true;
+            ParentGrab.PhysicsObject.Bind(_subscriber.AttachedGrab.PhysicsObject);
         }
 
         void UnBind()

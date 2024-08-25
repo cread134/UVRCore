@@ -1,6 +1,5 @@
 using Core.Service.AudioManagement;
 using Core.Service.DependencyManagement;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -106,6 +105,7 @@ namespace Core.XRFramework.Physics
             if (!_bindings.ContainsKey(bindingTarget))
             {
                 _bindings.Add(bindingTarget, new PhysicsBinding(this, bindingTarget));
+                Debug.Log($"Binding {bindingTarget} to {this}");
             }
         }
 
@@ -115,6 +115,7 @@ namespace Core.XRFramework.Physics
             {
                 _bindings[bindingTarget].Break();
                 _bindings.Remove(bindingTarget);
+                Debug.Log($"Releasing {bindingTarget} from {this}");
             }
         }
 

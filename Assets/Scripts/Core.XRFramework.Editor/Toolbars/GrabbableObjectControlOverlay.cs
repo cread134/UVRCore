@@ -10,9 +10,8 @@ namespace Core.XrFramework.Toolbars
     [Overlay(typeof(SceneView), "Grabbable Object Overlay", true)]
     public class GrabbableObjectControlOverlay : ContextualOverlay<GrabbableObject>
     {
-        public override VisualElement GetContent(GrabbableObject contextualObject)
+        public override VisualElement GetContent(GrabbableObject contextualObject, VisualElement root)
         {
-            var root = new VisualElement { name = "ObjectControls" };
             var headerLabel = new Label("Grabbable Object Controls");
             var dataBuilder = new System.Text.StringBuilder();
             dataBuilder.AppendLine($"IsGrabbed: {contextualObject.IsBeingGrabbed}");

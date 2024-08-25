@@ -4,8 +4,6 @@ using Core.Service.Logging;
 using Core.XRFramework;
 using Core.XRFramework.Interaction;
 using Core.XRFramework.Physics;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Core.Game.Interactables.Weapons.Firearms
@@ -13,8 +11,7 @@ namespace Core.Game.Interactables.Weapons.Firearms
     [RequireComponent(typeof(PhysicsObject))]
     public class GunObject : MonoBehaviour
     {
-        LazyComponent<PhysicsObject> physicsObject;
-        LazyService<ILoggingService> loggingService = new LazyService<ILoggingService>();
+        PhysicsObject physicsObject;
 
         [Header("Instance settings")]
         public GunConfiguration gunConfiguration;
@@ -25,12 +22,12 @@ namespace Core.Game.Interactables.Weapons.Firearms
         bool shootInputDown = false;
         private void Awake()
         {
-            physicsObject = new LazyComponent<PhysicsObject>(gameObject);
+            physicsObject = GetComponent<PhysicsObject>();
         }
 
         public void ShootInput(HandType handType, GrabPoint grabPoint)
         {
-            loggingService.Value.Log($"Gun shoot input received GrabPoint: {grabPoint.name} HandType: {handType}", LogLevel.Info, this);
+            Debug.Log($"Gun shoot input received GrabPoint: {grabPoint.name} HandType: {handType}", this);
             if (grabPoint == null)
                 return;
             if (grabPoint.IsGrabbed == false)
@@ -56,8 +53,8 @@ namespace Core.Game.Interactables.Weapons.Firearms
         {
             var recoil = gunConfiguration.PositionalRecoil;
             var angularRecoil = barrelReference.right * -gunConfiguration.AngularRecoil.x;
-            physicsObject.Value.AddForce(recoil, ForceMode.Impulse);
-            physicsObject.Value.AddTorque(angularRecoil, ForceMode.Impulse);
+            physicsObject.AddForce(recoil, ForceMode.Impulse);
+            physicsObject.AddTorque(angularRecoil, ForceMode.Impulse);
         }
 
         void PlayShootSound()

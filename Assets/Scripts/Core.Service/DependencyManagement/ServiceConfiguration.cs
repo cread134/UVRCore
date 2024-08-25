@@ -10,6 +10,8 @@ namespace Core.Service.DependencyManagement
         {
             objectFactory.RegisterService<IAppSettings, AppSettings>();
             objectFactory.RegisterService<IAudioService, AudioService>();
+
+
             ConfigureLogging(objectFactory);
         }
 

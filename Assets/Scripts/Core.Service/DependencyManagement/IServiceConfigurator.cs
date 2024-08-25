@@ -4,5 +4,4 @@
     {
         public void ConfigureServices(ObjectFactory objectFactory);
     }
-
 }

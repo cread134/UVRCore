@@ -12,9 +12,8 @@ namespace Core.XrFramework.Toolbars
     [Overlay(typeof(SceneView), "GrabPointControls", true)]
     public class GrabPointControlOverlay : ContextualOverlay<GrabPoint>
     {
-        public override VisualElement GetContent(GrabPoint contextualObject)
+        public override VisualElement GetContent(GrabPoint contextualObject, VisualElement root)
         {
-            VisualElement root = new VisualElement { name = "ObjectControls" };
             root.AddHeader("Point controls");
             var data = @$"
 Hand type: {contextualObject.handType}

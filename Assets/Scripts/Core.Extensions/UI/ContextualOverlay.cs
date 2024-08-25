@@ -6,7 +6,7 @@ using Core.DevTools.UI;
 
 namespace Core.DevTools.Scripting
 {
-    public class ContextualOverlay<T> : Overlay where T : MonoBehaviour
+    public class ContextualOverlay<T> : Overlay
     {
         public override void OnCreated()
         {
@@ -23,20 +23,15 @@ namespace Core.DevTools.Scripting
             var root = new VisualElement { name = "ObjectControls" };
             var header = new Label($"{typeof(T).Name}Overlay");
             root.Add(header);
-            var goTarget = Selection.activeGameObject?.GetComponent<T>();
+            var goTarget = Selection.activeGameObject.GetComponent<T>();
             if (goTarget != null)
             {
-                var additionalContent = GetContent(goTarget);
-
-                if (additionalContent != null)
-                {
-                    root.Add(additionalContent);
-                }
+                GetContent(goTarget, root);
             }
             return root;
         }
 
-        public virtual VisualElement GetContent(T contextualObject)
+        public virtual VisualElement GetContent(T contextualObject, VisualElement root)
         {
             return null;
         }
