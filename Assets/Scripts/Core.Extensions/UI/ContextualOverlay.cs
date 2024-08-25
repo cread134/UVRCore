@@ -23,10 +23,10 @@ namespace Core.DevTools.Scripting
             var root = new VisualElement { name = "ObjectControls" };
             var header = new Label($"{typeof(T).Name}Overlay");
             root.Add(header);
-            var goTarget = Selection.activeGameObject.GetComponent<T>();
-            if (goTarget != null)
+            var selectedGameObject = Selection.activeGameObject;
+            if (selectedGameObject != null && selectedGameObject.TryGetComponent(out T go))
             {
-                GetContent(goTarget, root);
+                GetContent(go, root);
             }
             return root;
         }

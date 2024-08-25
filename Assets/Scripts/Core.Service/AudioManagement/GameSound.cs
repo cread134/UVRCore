@@ -2,7 +2,7 @@
 
 namespace Core.Service.AudioManagement
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(fileName = "GameSound", menuName = "Game/Game Sound")]
     public class GameSound : ScriptableObject
     {
         public string SoundName;

@@ -1,5 +1,6 @@
 ﻿using Core.Service.Application;
 using Core.Service.AudioManagement;
+using Core.Service.GameEffects;
 using Core.Service.Logging;
 
 namespace Core.Service.DependencyManagement
@@ -10,7 +11,7 @@ namespace Core.Service.DependencyManagement
         {
             objectFactory.RegisterService<IAppSettings, AppSettings>();
             objectFactory.RegisterService<IAudioService, AudioService>();
-
+            objectFactory.RegisterService<IEffectManager, EffectManager>();
 
             ConfigureLogging(objectFactory);
         }
