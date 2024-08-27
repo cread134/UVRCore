@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _configuration: {fileID: 11400000, guid: 433961bf16dddf34abe05eacd509a705, type: 2}
+  _health: 100
 --- !u!65 &5679550370130064085
 BoxCollider:
   m_ObjectHideFlags: 0

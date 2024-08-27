@@ -1,6 +1,5 @@
 ﻿using Core.Game.World;
 using Core.Game.World.EntityInterfaces;
-using Core.Service.DependencyManagement;
 using UnityEngine;
 
 namespace Core.Game.Interactables.Props
