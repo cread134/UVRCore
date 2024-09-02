@@ -55,7 +55,7 @@ namespace Core.XRFramework.Physics
             matchVelocity *= GetMassSlowdownMultipler(physicsObject);
 
             ClampVelocity(minimumVelocity, maxVelocity, ref matchVelocity);
-            Vector3.SmoothDamp(_rigidbody.velocity, matchVelocity, ref matchVelocity, physicsObject.Mass);
+            Vector3.SmoothDamp(_rigidbody.linearVelocity, matchVelocity, ref matchVelocity, physicsObject.Mass);
             _rigidbody.AddForce(matchVelocity, ForceMode.VelocityChange);
         }
 
@@ -79,7 +79,7 @@ namespace Core.XRFramework.Physics
             Vector3 moveToHandVec = targetPosition - _rigidbody.transform.position;
             float neededSpeed = moveToHandVec.magnitude * (1.0f / Time.fixedDeltaTime);
             Vector3 neededSpeedVec = moveToHandVec.normalized * neededSpeed;
-            Vector3 currentSpeedVec = _rigidbody.velocity;
+            Vector3 currentSpeedVec = _rigidbody.linearVelocity;
             Vector3 newVelocity = neededSpeedVec - currentSpeedVec;
             return newVelocity;
         }

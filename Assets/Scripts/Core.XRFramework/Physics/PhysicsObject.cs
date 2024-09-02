@@ -13,8 +13,8 @@ namespace Core.XRFramework.Physics
         public Rigidbody PhysicsRigidbody => _rigidbody ??= GetComponent<Rigidbody>();
         public float Mass = 1f;
 
-        public float VelocityMagnitude => PhysicsRigidbody.velocity.magnitude;
-        public Vector3 Velocity => PhysicsRigidbody.velocity;
+        public float VelocityMagnitude => PhysicsRigidbody.linearVelocity.magnitude;
+        public Vector3 Velocity => PhysicsRigidbody.linearVelocity;
 
         public bool IsGrabbed { get; set; }
 
@@ -66,7 +66,7 @@ namespace Core.XRFramework.Physics
             {
                 return;
             }
-            PhysicsRigidbody.velocity = Vector3.zero;
+            PhysicsRigidbody.linearVelocity = Vector3.zero;
             PhysicsRigidbody.angularVelocity = Vector3.zero;
         }
 

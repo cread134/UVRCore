@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace Core.Networking
 {
-    public class GameNetwork
+
+    public class GameNetwork : MonoBehaviour
     {
         public void StartServer()
         {
