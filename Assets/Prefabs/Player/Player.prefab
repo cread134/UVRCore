@@ -361,10 +361,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 353461925850379935}
-  - component: {fileID: 2299914693656820090}
   - component: {fileID: 4629396546065643063}
   - component: {fileID: 4939020217738611514}
   - component: {fileID: 7430026108260961211}
+  - component: {fileID: 4568063087826710537}
   m_Layer: 6
   m_Name: XR Origin (XR Rig)
   m_TagString: Untagged
@@ -387,23 +387,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7978066418984466842}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2299914693656820090
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4117048040375380838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0cb9aa70a22847b5925ee5f067c10a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Camera: {fileID: 204152384298311161}
-  m_OriginBaseGameObject: {fileID: 4117048040375380838}
-  m_CameraFloorOffsetObject: {fileID: 3871139612503707873}
-  m_RequestedTrackingOriginMode: 0
-  m_CameraYOffset: 1.36144
 --- !u!143 &4629396546065643063
 CharacterController:
   m_ObjectHideFlags: 0
@@ -441,7 +424,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a26c941eb8a46f7b6d00416227ab8c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_XROrigin: {fileID: 2299914693656820090}
+  m_XROrigin: {fileID: 0}
   m_BodyPositionEvaluatorObject: {fileID: 0}
   m_ConstrainedBodyManipulatorObject: {fileID: 0}
   m_UseCharacterControllerIfExists: 1
@@ -457,6 +440,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fa7b4195685c3846be746c74f0ab2f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4568063087826710537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4117048040375380838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dc6f1a1099e4f040a871a6a142400b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftHand: {fileID: 1438399091885755857}
+  rightHand: {fileID: 3528275402716750788}
+  rightHandController: {fileID: 85078385258468307}
+  leftHandController: {fileID: 8889691577466181057}
 --- !u!1 &4465924921447104926
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,7 +504,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a26c941eb8a46f7b6d00416227ab8c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_XROrigin: {fileID: 2299914693656820090}
+  m_XROrigin: {fileID: 0}
   m_BodyPositionEvaluatorObject: {fileID: 0}
   m_ConstrainedBodyManipulatorObject: {fileID: 0}
   m_UseCharacterControllerIfExists: 1

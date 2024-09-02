@@ -8,9 +8,9 @@ namespace Core.Game
     [RequireComponent(typeof(RemotePlayer))]
     public class GamePlayer : NetworkBehaviour
     {
-        private void Awake()
+        private void Start()
         {
-            if (IsHost || IsClient)
+            if (IsOwner)
             {
                 GetComponent<LocalPlayer>().Setup();
             }

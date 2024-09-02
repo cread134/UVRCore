@@ -14,7 +14,10 @@ namespace Core.XRFramework.Interaction
 
         public void SetActive(bool active)
         {
-            _lineRender.enabled = active;
+            if (_lineRender != null)
+            {
+                _lineRender.enabled = active;
+            }
         }
         public void UpdateTransform(Vector3 newPos, Vector3 endPos, Quaternion newRot)
         {
