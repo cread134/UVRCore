@@ -5,7 +5,8 @@
         "Unity.InputSystem",
         "Core.Service",
         "Unity.XR.Interaction.Toolkit",
-        "Core.Extensions"
+        "Core.Extensions",
+        "Unity.Netcode.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

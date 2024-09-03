@@ -1,24 +1,24 @@
 using Core.Service.DependencyManagement;
+using Core.Service.ObjectManagement;
 using Core.Service.Physics;
 using Core.XRFramework.Context;
 using Core.XRFramework.Interaction.WorldObject;
 using Core.XRFramework.Physics;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace Core.XRFramework.Interaction
 {
-    [SelectionBase]
-    [RequireComponent(typeof(Rigidbody))]
-    public class PhysicalHandInteractor : MonoBehaviour
+    [SelectionBase, RequireComponent(typeof(Rigidbody))]
+    public class PhysicalHandInteractor : MonoBehaviour, ISpawnable
     {
         [SerializeField] HandType handType;
         [SerializeField] HandController handController;
 
         [Header("Hand Interactor Settings")]
+        [SerializeField] SynchedTransform synchedTransform;
         [SerializeField] GrabInteractionIcon grabIndicator;
         [SerializeField] Transform interactionPoint;
         [SerializeField] CommonPhysicsInteractorConfig interactionConfiguration;
@@ -49,9 +49,10 @@ namespace Core.XRFramework.Interaction
 
         LazyService<IHapticsService> hapticsService = new ();
 
-        private void Awake()
+        bool hasSpawned = false;
+        public void Spawned()
         {
-            _xrContext = FindObjectOfType<XrContext>() ?? throw new Exception("No XR Context found in scene");
+            _xrContext = FindFirstObjectByType<XrContext>() ?? throw new Exception("No XR Context found in scene");
             _camera = _xrContext.GetCamera();
 
             _rigidbody = GetComponent<Rigidbody>();
@@ -71,7 +72,39 @@ namespace Core.XRFramework.Interaction
             handController.OnSecondaryButtonUpEvent += OnMainReleased;
 
             grabIndicator.SetActive(false);
+            hasSpawned = true;
         }
+
+        #region GameLoop
+
+        private void Update()
+        {
+            if (!hasSpawned)
+            {
+                return;
+            }
+            if (!IsGrabbingObject)
+            {
+                UpdateGrabHover();
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            if (!hasSpawned)
+            {
+                return;
+            }
+            UpdateHandTransform();
+            SyncHand();
+        }
+
+        void SyncHand()
+        {
+            synchedTransform?.Sync(transform);
+        }
+
+        #endregion
 
         #region grabbing
         public IGrabbableObject hoveredObject;
@@ -224,22 +257,6 @@ namespace Core.XRFramework.Interaction
             _rigidbody.MovePosition(newPosition);
             _rigidbody.MoveRotation(newRotation);
            
-        }
-        #endregion
-
-        #region GameLoop
-
-        private void Update()
-        {
-            if (!IsGrabbingObject)
-            {
-                UpdateGrabHover();
-            }
-        }
-
-        private void FixedUpdate()
-        {
-            UpdateHandTransform();
         }
         #endregion
 

@@ -1,6 +1,4 @@
 using Core.XRFramework.Interaction;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Core.XRFramework.Context
@@ -11,7 +9,6 @@ namespace Core.XRFramework.Context
         [SerializeField] PhysicalHandInteractor rightHand;
         [SerializeField] HandController rightHandController;
         [SerializeField] HandController leftHandController;
-
 
         public PhysicalHandInteractor GetHand(HandType side)
         {

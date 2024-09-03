@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core.XRFramework.Context;
+using UnityEngine;
 
 namespace Core.Game
 {
@@ -11,6 +12,7 @@ namespace Core.Game
         {
             localObject.SetActive(false);
             remoteObject.SetActive(true);
+            GetComponent<XrContext>().enabled = true;
             Debug.Log("Remote player setup");
         }
     }
