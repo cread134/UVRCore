@@ -51,10 +51,6 @@ namespace Core.Game.Interactables.Weapons.Firearms
 
         void DoRecoil()
         {
-            var recoil = gunConfiguration.PositionalRecoil;
-            var angularRecoil = barrelReference.right * -gunConfiguration.AngularRecoil.x;
-            physicsObject.AddForce(recoil, ForceMode.Impulse);
-            physicsObject.AddTorque(angularRecoil, ForceMode.Impulse);
         }
 
         void PlayShootSound()

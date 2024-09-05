@@ -25,5 +25,6 @@ namespace Core.XRFramework.Interaction.WorldObject
         void SetOverride(IGrabOverrider grabOverride, bool disableCollision = false);
         void ReleaseOverride();
         void DoRelease();
+        void SetGrabbedServerCmd(ulong id, bool value);
     }
 }

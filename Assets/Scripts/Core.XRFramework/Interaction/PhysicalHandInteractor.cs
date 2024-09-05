@@ -7,12 +7,13 @@ using Core.XRFramework.Physics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Core.XRFramework.Interaction
 {
     [SelectionBase, RequireComponent(typeof(Rigidbody))]
-    public class PhysicalHandInteractor : MonoBehaviour, ISpawnable
+    public class PhysicalHandInteractor : NetworkBehaviour, ISpawnable
     {
         [SerializeField] HandType handType;
         [SerializeField] HandController handController;
@@ -83,6 +84,10 @@ namespace Core.XRFramework.Interaction
             {
                 return;
             }
+            if (!IsOwner)
+            {
+                return;
+            }
             if (!IsGrabbingObject)
             {
                 UpdateGrabHover();
@@ -92,6 +97,10 @@ namespace Core.XRFramework.Interaction
         private void FixedUpdate()
         {
             if (!hasSpawned)
+            {
+                return;
+            }
+            if (!IsOwner)
             {
                 return;
             }
@@ -151,6 +160,7 @@ namespace Core.XRFramework.Interaction
             }
         }
 
+        #region Grab and Release
         private void GrabObject()
         {
             grabbedObject = hoveredObject;
@@ -159,6 +169,10 @@ namespace Core.XRFramework.Interaction
             hoveredObject = null;
             _isGrabbingObject = true;
             grabbedObject.OnGrab(handType, interactionPoint.position, interactionPoint.up, _rigidbody.rotation);
+            if (grabbedObject is NetworkBehaviour networkBehaviour)
+            {
+                ServerRequestGrabServerRpc(new NetworkObjectReference(networkBehaviour.NetworkObject), OwnerClientId, true);
+            }
             _rigidbody.isKinematic = true;
             grabIndicator.SetActive(false);
             SetCollisionActive(false);
@@ -172,6 +186,10 @@ namespace Core.XRFramework.Interaction
 
             _isGrabbingObject = false;
             grabbedObject.OnRelease(handType, interactionPoint.position, _rigidbody.rotation);
+            if (grabbedObject is NetworkBehaviour networkBehaviour)
+            {
+                ServerRequestGrabServerRpc(new NetworkObjectReference(networkBehaviour.NetworkObject), OwnerClientId, false);
+            }
             _rigidbody.isKinematic = false;
             grabIndicator.SetActive(false);
             SetCollisionActive(true);
@@ -181,6 +199,19 @@ namespace Core.XRFramework.Interaction
 
             hapticsService.Value?.SendHapticsImpulse(handType, interactionConfiguration.hapticGrabAmplitude, interactionConfiguration.hapticGrabDuration);
         }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void ServerRequestGrabServerRpc(NetworkObjectReference objectReference, ulong clientId, bool isGrab)
+        {
+            if (objectReference.TryGet(out var grabbableObjectBase))
+            {
+                if (grabbableObjectBase.gameObject.TryGetComponent(out IGrabbableObject grabbableObject))
+                {
+                    grabbedObject.SetGrabbedServerCmd(clientId, isGrab);
+                }
+            }
+        }
+        #endregion
 
         void SetCollisionActive(bool active)
         {

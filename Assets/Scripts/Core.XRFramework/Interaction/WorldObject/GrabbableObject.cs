@@ -4,6 +4,7 @@ using Core.XRFramework.Physics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,8 +12,32 @@ namespace Core.XRFramework.Interaction.WorldObject
 {
     [SelectionBase]
     [RequireComponent(typeof(PhysicsObject))]
+    [RequireComponent(typeof(NetworkObject))]
     public class GrabbableObject : MonoBehaviour, IGrabbableObject, IInputSubscriber
     {
+        #region Networking
+
+        NetworkVariable<bool> _isBeingGrabbed = new NetworkVariable<bool>();
+        NetworkVariable<ulong> _ownerId = new NetworkVariable<ulong>();
+
+        public void SetGrabbedServerCmd(ulong id, bool value)
+        {
+            _isBeingGrabbed.Value = value;
+            _ownerId.Value = id;
+            //change ownership
+            if (value)
+            {
+                GetComponent<NetworkObject>().ChangeOwnership(id);
+            } 
+            else
+            {
+                GetComponent<NetworkObject>().ChangeOwnership(0);
+            }
+        }
+
+        #endregion
+
+
         [SerializeField] private XrObjectPhysicsConfig physicsConfiguration;
         private GrabPointGroup[] grabPointGroups = new GrabPointGroup[0];
 
@@ -254,9 +279,8 @@ namespace Core.XRFramework.Interaction.WorldObject
                 _primaryGrabType = handType;
             }
             TryGetGrab(handType, referencePosition, referenceUp, referenceRotation, out Vector3 newPosition, out Quaternion newRotation);
-            storedHandInformation[handType].IsGrabbing = true;
 
-            _physicsObject.IsGrabbed = true;
+            storedHandInformation[handType].IsGrabbing = true;
             _physicsObject.PhysicsRigidbody.useGravity = false;
             _physicsObject.PhysicsRigidbody.centerOfMass = newPosition - _physicsObject.PhysicsRigidbody.position;
         }
@@ -274,7 +298,6 @@ namespace Core.XRFramework.Interaction.WorldObject
             storedHandInformation[handType].IsGrabbing = false;
             _physicsObject.ResetCentreOfMass();
             _physicsMover.Reset();
-            _physicsObject.IsGrabbed = false;
         }
 
         public bool CanGrab()

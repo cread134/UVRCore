@@ -1,13 +1,14 @@
 using Core.Service.AudioManagement;
 using Core.Service.DependencyManagement;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
 
 namespace Core.XRFramework.Physics
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PhysicsObject : MonoBehaviour
+    public class PhysicsObject : NetworkBehaviour
     {
         Rigidbody _rigidbody;
         public Rigidbody PhysicsRigidbody => _rigidbody ??= GetComponent<Rigidbody>();
@@ -52,14 +53,6 @@ namespace Core.XRFramework.Physics
             ResetVelocity();
         }
 
-        private void FixedUpdate()
-        {
-            if (IsGrabbed)
-            {
-                UpdateForce();
-            }
-        }
-
         public void ResetVelocity()
         {
             if (PhysicsRigidbody.isKinematic)
@@ -86,6 +79,7 @@ namespace Core.XRFramework.Physics
             audioService.Value.PlaySound(defaultCollisionSound, transform.position);
         }
 
+        private bool collisionActive = true;
         public bool CollisionActive
         {
             get => collisionActive; set
@@ -117,32 +111,6 @@ namespace Core.XRFramework.Physics
                 _bindings.Remove(bindingTarget);
                 Debug.Log($"Releasing {bindingTarget} from {this}");
             }
-        }
-
-        #endregion
-
-        #region force
-        void UpdateForce()
-        {
-            _torqueCache = Vector3.Lerp(_torqueCache, Vector3.zero, Time.deltaTime * 10f);
-            _forceCache = Vector3.Lerp(_forceCache, Vector3.zero, Time.deltaTime * 10f);
-
-            PhysicsRigidbody.AddForce(_forceCache, ForceMode.Force);
-            PhysicsRigidbody.AddTorque(_torqueCache, ForceMode.Force);
-        }
-
-        private Vector3 _torqueCache;
-        private Vector3 _forceCache;
-        private bool collisionActive = true;
-
-        public void AddForce(Vector3 force, ForceMode forceMode)
-        {
-            _forceCache += force;
-        }
-
-        public void AddTorque(Vector3 torque, ForceMode forceMode)
-        {
-            _torqueCache += torque;
         }
 
         #endregion

@@ -15,11 +15,41 @@ namespace Core.XrFramework.Toolbars
         bool leftOpen;
         bool rightOpen;
 
+        XrContext context;
+
+        public override void OnCreated()
+        {
+            Selection.selectionChanged += OnObjectSelected;
+        }
+
+        private void OnObjectSelected()
+        {
+            if (Selection.activeGameObject == null)
+            {
+                return;
+            }
+            if (context != null)
+            {
+                return;
+            }
+            context = GameObject.FindFirstObjectByType<XrContext>();
+            if (context != null)
+            {
+                this.Redraw();
+                return;
+            }
+        }
+
+        public override void OnWillBeDestroyed()
+        {
+            Selection.selectionChanged -= OnObjectSelected;
+        }
+
         public override VisualElement CreatePanelContent()
         {
 
             var root = new VisualElement() { name = "Xr Toolbar" };
-            var context = GameObject.FindFirstObjectByType<XrContext>();
+            context = GameObject.FindFirstObjectByType<XrContext>();
             if (context == null)
             {
                 root.AddHeader("No XrContext found");

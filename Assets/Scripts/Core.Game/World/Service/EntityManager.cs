@@ -1,8 +1,9 @@
 ﻿using Core.Game.World.EntityInterfaces;
+using Unity.Netcode;
 
 namespace Core.Game.World.Service
 {
-    internal class EntityManager : IEntityManager
+    public class EntityManager : NetworkBehaviour, IEntityManager
     {
         public void KillEntity(IKillableEntity killableEntity)
         {
@@ -13,6 +14,13 @@ namespace Core.Game.World.Service
         {
             var template = spawnableEntity.Configuration.Template;
             return spawnableEntity;
+        }
+
+        public void DamageEntity(IHealthEntity damageableEntity, int damage)
+        {
+            if (damageableEntity is NetworkBehaviour networkBehaviour)
+            {
+            }
         }
     }
 }
