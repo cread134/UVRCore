@@ -2,7 +2,8 @@
 
 namespace Core.XRFramework.Physics
 {
-    public class PhysicsBinding
+
+    public class PhysicsBinding : IBinding
     {
         Joint BindingJoint;
 

@@ -12,8 +12,9 @@ namespace Core.XRFramework.Interaction.WorldObject
         PhysicsMover PhysicsMover { get; }
         bool IsTransformOverriden { get; }
         bool IsBeingGrabbed { get; }
+        ulong OwnerId { get; }
 
-        bool CanGrab();
+        bool CanGrab(ulong clientId);
         void OnHoverEnter();
         void OnHoverExit();
         void OnGrab(HandType handType, Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation);

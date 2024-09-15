@@ -17,8 +17,10 @@ namespace Core.XRFramework.Interaction.WorldObject
     {
         #region Networking
 
-        NetworkVariable<bool> _isBeingGrabbed = new NetworkVariable<bool>();
-        NetworkVariable<ulong> _ownerId = new NetworkVariable<ulong>();
+        readonly NetworkVariable<bool> _isBeingGrabbed = new NetworkVariable<bool>();
+        readonly NetworkVariable<ulong> _ownerId = new NetworkVariable<ulong>();
+        
+        public ulong OwnerId => _ownerId.Value;
 
         public void SetGrabbedServerCmd(ulong id, bool value)
         {
@@ -300,8 +302,12 @@ namespace Core.XRFramework.Interaction.WorldObject
             _physicsMover.Reset();
         }
 
-        public bool CanGrab()
+        public bool CanGrab(ulong clientId)
         {
+            if (IsBeingGrabbed && _ownerId.Value != clientId)
+            {
+                return false;
+            }
             return true;
         }
 

@@ -1,11 +1,4 @@
-﻿using Core.Game.World.Service;
-using Core.Service.DependencyManagement;
-using Core.XRFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Core.Service.DependencyManagement;
 
 namespace Core.Game.Assets.Scripts.Core.Game
 {
@@ -13,7 +6,6 @@ namespace Core.Game.Assets.Scripts.Core.Game
     {
         public void ConfigureServices(ObjectFactory objectFactory)
         {
-            objectFactory.RegisterService<IEntityManager, EntityManager>();
         }
     }
 }

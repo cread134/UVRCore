@@ -16,6 +16,7 @@ namespace Core.XrFramework.Toolbars
             var dataBuilder = new System.Text.StringBuilder();
             dataBuilder.AppendLine($"IsGrabbed: {contextualObject.IsBeingGrabbed}");
             dataBuilder.AppendLine($"IsHovered: {contextualObject.IsHovered}");
+            dataBuilder.AppendLine($"Owner: {contextualObject.OwnerId}");
 
             var dataLabel = new Label(dataBuilder.ToString());
             root.Add(headerLabel);

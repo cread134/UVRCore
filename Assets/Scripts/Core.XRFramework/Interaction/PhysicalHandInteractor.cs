@@ -80,11 +80,7 @@ namespace Core.XRFramework.Interaction
 
         private void Update()
         {
-            if (!hasSpawned)
-            {
-                return;
-            }
-            if (!IsOwner)
+            if (!hasSpawned || !IsOwner)
             {
                 return;
             }
@@ -96,7 +92,17 @@ namespace Core.XRFramework.Interaction
 
         private void FixedUpdate()
         {
-            if (!hasSpawned)
+            if (!hasSpawned || !IsOwner)
+            {
+                return;
+            }
+            UpdateHandTransform();
+            SyncHand();
+        }
+
+        private void LateUpdate()
+        {
+            if (!hasSpawned || !IsOwner)
             {
                 return;
             }
@@ -104,8 +110,7 @@ namespace Core.XRFramework.Interaction
             {
                 return;
             }
-            UpdateHandTransform();
-            SyncHand();
+            UpdateHandTransformLate();
         }
 
         void SyncHand()
@@ -120,7 +125,7 @@ namespace Core.XRFramework.Interaction
         IGrabbableObject grabbedObject;
         bool _isGrabbingObject;
         bool IsGrabbingObject => _isGrabbingObject && grabbedObject != null;
-        bool CanGrabObject => hoveredObject != null && hoveredObject.CanGrab();
+        bool CanGrabObject => hoveredObject != null && hoveredObject.CanGrab(OwnerClientId);
 
         RaycastHit[] hoverBuffer = new RaycastHit[3];
 
@@ -273,21 +278,24 @@ namespace Core.XRFramework.Interaction
             if (!IsGrabbingObject)
             {
                 _physicsMover.MatchTransform(handController.transform);
-            } 
-            else
-            {
-                UpdateHelpObjectTransform();
             }
         }
 
-        private void UpdateHelpObjectTransform()
+        void UpdateHandTransformLate()
+        {
+            if (IsGrabbingObject)
+            {
+                UpdateHeldObjectTransform();
+            }
+        }
+
+        private void UpdateHeldObjectTransform()
         {
             grabbedObject.UpdateCachedValues(handType, handController.transform.position, handController.transform.up, handController.transform.rotation);
             grabbedObject.UpdateTransformState(handType);
             grabbedObject.GetGrabHandPosition(handType, out var newPosition, out var newRotation);
             _rigidbody.MovePosition(newPosition);
             _rigidbody.MoveRotation(newRotation);
-           
         }
         #endregion
 

@@ -7,6 +7,7 @@ using UnityEngine.Events;
 
 namespace Core.XRFramework.Physics
 {
+
     public class ObjectInput : MonoBehaviour, IGrabOverrider
     {
         [Header("Input Settings")]
@@ -248,7 +249,7 @@ namespace Core.XRFramework.Physics
         void Bind()
         {
             isBound = true;
-            ParentGrab.PhysicsObject.Bind(_subscriber.AttachedGrab.PhysicsObject);
+            ParentGrab.PhysicsObject.BindTo(_subscriber.AttachedGrab.PhysicsObject);
         }
 
         void UnBind()

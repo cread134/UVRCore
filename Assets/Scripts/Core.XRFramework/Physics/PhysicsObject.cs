@@ -1,5 +1,6 @@
 using Core.Service.AudioManagement;
 using Core.Service.DependencyManagement;
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEditor;
@@ -18,6 +19,12 @@ namespace Core.XRFramework.Physics
         public Vector3 Velocity => PhysicsRigidbody.linearVelocity;
 
         public bool IsGrabbed { get; set; }
+
+        public bool IsKinematic
+        {
+            get => PhysicsRigidbody.isKinematic;
+            set => PhysicsRigidbody.isKinematic = value;
+        }
 
         [Header("Collision")]
         public GameSound defaultCollisionSound;
@@ -63,6 +70,11 @@ namespace Core.XRFramework.Physics
             PhysicsRigidbody.angularVelocity = Vector3.zero;
         }
 
+        public IDisposable OverridePhysics()
+        {
+            return new PhysicsObjectOverride(this);
+        }
+
         #region collision
 
         const float MIN_COLLISION_IMPULSE = 0.1f;
@@ -92,23 +104,48 @@ namespace Core.XRFramework.Physics
 
         #region Binding
 
-        Dictionary<PhysicsObject, PhysicsBinding> _bindings = new Dictionary<PhysicsObject, PhysicsBinding>();
+        Dictionary<GameObject, IBinding> _bindings = new Dictionary<GameObject, IBinding>();
 
-        public void Bind(PhysicsObject bindingTarget)
+        /// <summary>
+        /// Makes joint to bind to object
+        /// </summary>
+        /// <param name="bindingTarget"></param>
+        public void BindTo(PhysicsObject bindingTarget)
         {
-            if (!_bindings.ContainsKey(bindingTarget))
+            if (!_bindings.ContainsKey(bindingTarget.gameObject))
             {
-                _bindings.Add(bindingTarget, new PhysicsBinding(this, bindingTarget));
+                _bindings.Add(bindingTarget.gameObject, new PhysicsBinding(this, bindingTarget));
                 Debug.Log($"Binding {bindingTarget} to {this}");
+            } 
+            else
+            {
+                Debug.LogWarning($"Already bound to {bindingTarget}");
+            }
+        }
+
+        /// <summary>
+        /// Binds to transform
+        /// </summary>
+        /// <param name="bindingParent"></param>
+        public void BindTo(Transform bindingParent)
+        {
+            if (!_bindings.ContainsKey(bindingParent.gameObject))
+            {
+                _bindings.Add(bindingParent.gameObject, new TransformBinding(this, bindingParent));
+                Debug.Log($"Binding (transforM) {bindingParent} to {this}");
+            } 
+            else
+            {
+                Debug.LogWarning($"Already bound to {bindingParent}");
             }
         }
 
         public void ReleaseBinding(PhysicsObject bindingTarget)
         {
-            if (_bindings.ContainsKey(bindingTarget))
+            if (_bindings.ContainsKey(bindingTarget.gameObject))
             {
-                _bindings[bindingTarget].Break();
-                _bindings.Remove(bindingTarget);
+                _bindings[bindingTarget.gameObject].Break();
+                _bindings.Remove(bindingTarget.gameObject);
                 Debug.Log($"Releasing {bindingTarget} from {this}");
             }
         }
