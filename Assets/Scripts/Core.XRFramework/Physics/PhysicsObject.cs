@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace Core.XRFramework.Physics
 {
+    [SelectionBase]
     [RequireComponent(typeof(Rigidbody))]
     public class PhysicsObject : NetworkBehaviour
     {
@@ -25,6 +26,12 @@ namespace Core.XRFramework.Physics
             get => PhysicsRigidbody.isKinematic;
             set => PhysicsRigidbody.isKinematic = value;
         }
+
+
+        [SerializeField] 
+        private XrObjectPhysicsConfig physicsConfiguration;
+        public PhysicsMover PhysicsMover => _physicsMover ??= new PhysicsMover(physicsConfiguration, PhysicsRigidbody);
+        PhysicsMover _physicsMover;
 
         [Header("Collision")]
         public GameSound defaultCollisionSound;
@@ -49,6 +56,7 @@ namespace Core.XRFramework.Physics
         {
             var offset = CentreOfMass - PhysicsRigidbody.position;
             PhysicsRigidbody.centerOfMass = offset;
+            PhysicsMover.Reset();
         }
         #endregion
 
@@ -68,12 +76,39 @@ namespace Core.XRFramework.Physics
             }
             PhysicsRigidbody.linearVelocity = Vector3.zero;
             PhysicsRigidbody.angularVelocity = Vector3.zero;
+            PhysicsMover.Reset();
         }
 
         public IDisposable OverridePhysics()
         {
             return new PhysicsObjectOverride(this);
         }
+
+        #region moving
+
+        public void Match(Transform targetTransform)
+        {
+            PhysicsMover.MatchTransform(targetTransform);
+        }
+
+        public void Match(Vector3 position, Quaternion rotation)
+        {
+            PhysicsMover.MatchTransform(position, rotation);
+        }
+
+        public void SetPosition (Vector3 position)
+        {
+            ResetVelocity();
+            PhysicsMover.SetPosition(position);
+        }
+
+        public void SetRotation(Quaternion rotation)
+        {
+            ResetVelocity();
+            PhysicsMover.SetRotation(rotation);
+        }
+        
+        #endregion
 
         #region collision
 

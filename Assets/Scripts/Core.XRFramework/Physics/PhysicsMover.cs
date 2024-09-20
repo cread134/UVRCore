@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Core.XRFramework.Physics
 {
@@ -39,6 +35,7 @@ namespace Core.XRFramework.Physics
             PhysicsMatchRotationWithObject(rotation, physicsObject);
             PhysicsMatchPositionWithObject(position, physicsObject);
         }
+
         #region position
         public void PhysicsMatchPosition(Vector3 targetPosition)
         {
@@ -111,5 +108,15 @@ namespace Core.XRFramework.Physics
         }
 
         #endregion
+
+        public void SetPosition(Vector3 position)
+        {
+            _rigidbody.position = position;
+        }
+
+        public void SetRotation(Quaternion rotation)
+        {
+            _rigidbody.rotation = rotation;
+        }
     }
 }

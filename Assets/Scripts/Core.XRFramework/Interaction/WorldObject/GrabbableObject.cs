@@ -1,5 +1,6 @@
 using Core.Service.DependencyManagement;
 using Core.Service.Logging;
+using Core.Service.Physics;
 using Core.XRFramework.Physics;
 using System;
 using System.Collections.Generic;
@@ -39,18 +40,11 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         #endregion
 
-
-        [SerializeField] private XrObjectPhysicsConfig physicsConfiguration;
         private GrabPointGroup[] grabPointGroups = new GrabPointGroup[0];
 
         public Transform Transform => transform;
         public PhysicsObject PhysicsObject => _physicsObject;
-
         PhysicsObject _physicsObject;
-
-        public PhysicsMover PhysicsMover => _physicsMover ??= new PhysicsMover(physicsConfiguration, _physicsObject.PhysicsRigidbody);
-        PhysicsMover _physicsMover;
-
 
         LazyService<ILoggingService> loggingService = new LazyService<ILoggingService>();
 
@@ -63,6 +57,9 @@ namespace Core.XRFramework.Interaction.WorldObject
 
         [HideInInspector]
         public EventHandler ReleaseRequested { get; set; }
+
+        [SerializeField] private LayerMaskConfiguration inputMask;
+        [SerializeField] private float socketInputRadius = 0.1f;
 
         private void Awake()
         {
@@ -167,7 +164,7 @@ namespace Core.XRFramework.Interaction.WorldObject
                                                                     : CalculateRotationalTarget(targetRotation, getTransform.Rotation);
             }
 
-            PhysicsMover.MatchTransform(calculatedTargetPosition, calculatedRotation, _physicsObject);
+            PhysicsObject.Match(calculatedTargetPosition, calculatedRotation);
         }
 
         #region override
@@ -299,7 +296,33 @@ namespace Core.XRFramework.Interaction.WorldObject
             _physicsObject.PhysicsRigidbody.useGravity = true;
             storedHandInformation[handType].IsGrabbing = false;
             _physicsObject.ResetCentreOfMass();
-            _physicsMover.Reset();
+
+            PostRelease();
+        }
+
+        void PostRelease()
+        {
+            if(CheckForSockets())
+            {
+                return;
+            }
+        }
+
+        bool CheckForSockets()
+        {
+            var colliders = UnityEngine.Physics.OverlapSphere(transform.position, socketInputRadius, inputMask.LayerMask, QueryTriggerInteraction.Collide);
+            foreach (var collider in colliders)
+            {
+                if (collider.TryGetComponent(out IObjectSocket socket))
+                {
+                    if (socket.CanHoldObject(this))
+                    {
+                        socket.AttachObject(this);
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public bool CanGrab(ulong clientId)

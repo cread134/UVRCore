@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 207061873934802009}
   - component: {fileID: 4497093939626483158}
+  - component: {fileID: 1138903786842265844}
   - component: {fileID: 8598101411612579530}
   - component: {fileID: 2664651499813967375}
   - component: {fileID: 1521247191248453680}
@@ -66,6 +67,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1138903786842265844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776844491670659167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 323078099
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &8598101411612579530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,6 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Mass: 1
+  physicsConfiguration: {fileID: 11400000, guid: 0cbb06f63052d2e45b05faf66c0a0474, type: 2}
   defaultCollisionSound: {fileID: 11400000, guid: aa990d8a05477ed48b292a921f0b2cdd, type: 2}
   centreOfMassOverride: {fileID: 0}
 --- !u!114 &2664651499813967375
@@ -93,7 +116,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ac7ed1d1f304004cae3fc2c6c9928a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  physicsConfiguration: {fileID: 11400000, guid: 0cbb06f63052d2e45b05faf66c0a0474, type: 2}
+  inputMask: {fileID: 0}
+  socketInputRadius: 0.1
 --- !u!114 &1521247191248453680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +189,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

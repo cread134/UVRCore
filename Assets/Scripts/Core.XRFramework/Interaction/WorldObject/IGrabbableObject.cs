@@ -9,7 +9,6 @@ namespace Core.XRFramework.Interaction.WorldObject
         Transform Transform { get; }
         PhysicsObject PhysicsObject { get; }
         EventHandler ReleaseRequested { get; set; }
-        PhysicsMover PhysicsMover { get; }
         bool IsTransformOverriden { get; }
         bool IsBeingGrabbed { get; }
         ulong OwnerId { get; }
