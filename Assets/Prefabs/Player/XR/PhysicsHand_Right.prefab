@@ -109,6 +109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handType: 1
   handController: {fileID: 0}
+  synchedTransform: {fileID: 0}
   grabIndicator: {fileID: 3207735633495814516}
   interactionPoint: {fileID: 5328953779958229976}
   interactionConfiguration: {fileID: 11400000, guid: f9a7942faa4441c4e8a939000f3a290c, type: 2}

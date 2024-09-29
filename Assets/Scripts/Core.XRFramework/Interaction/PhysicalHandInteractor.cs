@@ -19,7 +19,6 @@ namespace Core.XRFramework.Interaction
         [SerializeField] HandController handController;
 
         [Header("Hand Interactor Settings")]
-        [SerializeField] SynchedTransform synchedTransform;
         [SerializeField] GrabInteractionIcon grabIndicator;
         [SerializeField] Transform interactionPoint;
         [SerializeField] CommonPhysicsInteractorConfig interactionConfiguration;
@@ -97,7 +96,6 @@ namespace Core.XRFramework.Interaction
                 return;
             }
             UpdateHandTransform();
-            SyncHand();
         }
 
         private void LateUpdate()
@@ -111,11 +109,6 @@ namespace Core.XRFramework.Interaction
                 return;
             }
             UpdateHandTransformLate();
-        }
-
-        void SyncHand()
-        {
-            synchedTransform?.Sync(transform);
         }
 
         #endregion

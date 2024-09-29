@@ -141,7 +141,6 @@ namespace Core.XRFramework.Interaction.WorldObject
             var targetPosition = cachedInformation.TargetPosition;
             var targetRotation = cachedInformation.TargetRotation;
 
-
             var oppositeSide = _primaryGrabType != HandType.Left ? HandType.Left : HandType.Right;
             var mainHandTarget = storedHandInformation[oppositeSide].TargetPosition;
 
