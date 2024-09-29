@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 5694528447155531865}
   - component: {fileID: 5437694957455495156}
   - component: {fileID: 530002100994725776}
+  - component: {fileID: 9196543487398000453}
   m_Layer: 7
   m_Name: PhysicsHand_Right
   m_TagString: Untagged
@@ -109,10 +110,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handType: 1
   handController: {fileID: 0}
-  synchedTransform: {fileID: 0}
   grabIndicator: {fileID: 3207735633495814516}
   interactionPoint: {fileID: 5328953779958229976}
   interactionConfiguration: {fileID: 11400000, guid: f9a7942faa4441c4e8a939000f3a290c, type: 2}
+--- !u!114 &9196543487398000453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5563570574755268802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d5f16651f6b5154ca04e3216bb5d831, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Mass: 1
+  physicsConfiguration: {fileID: 11400000, guid: 0cbb06f63052d2e45b05faf66c0a0474, type: 2}
+  defaultCollisionSound: {fileID: 11400000, guid: aa990d8a05477ed48b292a921f0b2cdd, type: 2}
+  centreOfMassOverride: {fileID: 0}
 --- !u!1 &7709930231540836286
 GameObject:
   m_ObjectHideFlags: 0

@@ -802,6 +802,75 @@ Transform:
   - {fileID: 1140468831}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1756550704
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5244986987479471891, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2312155618
+      objectReference: {fileID: 0}
+    - target: {fileID: 5244986987479471891, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 3402155451
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620463277941656689, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.83084667
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620463277941656689, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.1035
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620463277941656689, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.26657802
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620463277941656689, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620463277941656689, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620463277941656689, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620463277941656689, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620463277941656689, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620463277941656689, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620463277941656689, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758279327480872621, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      propertyPath: m_Name
+      value: PhysicsCube
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5244986987479471891, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8758279327480872621, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+      insertIndex: 5
+      addedObject: {fileID: 1760782378}
+  m_SourcePrefab: {fileID: 100100000, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
 --- !u!1 &1757898867
 GameObject:
   m_ObjectHideFlags: 0
@@ -880,6 +949,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1760782368 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8758279327480872621, guid: 38c0d0b605b833f4ab577ef0ce27c1e1, type: 3}
+  m_PrefabInstance: {fileID: 1756550704}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1760782378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760782368}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 392519945
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 0
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &1786802738
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1351,3 +1446,4 @@ SceneRoots:
   - {fileID: 1553365282496172441}
   - {fileID: 1757898870}
   - {fileID: 481020370}
+  - {fileID: 1756550704}

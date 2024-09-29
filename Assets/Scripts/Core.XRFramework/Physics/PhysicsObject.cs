@@ -30,8 +30,7 @@ namespace Core.XRFramework.Physics
 
         [SerializeField] 
         private XrObjectPhysicsConfig physicsConfiguration;
-        public PhysicsMover PhysicsMover => _physicsMover ??= new PhysicsMover(physicsConfiguration, PhysicsRigidbody);
-        PhysicsMover _physicsMover;
+        public PhysicsMover PhysicsMover { get; set; }
 
         [Header("Collision")]
         public GameSound defaultCollisionSound;
@@ -62,6 +61,7 @@ namespace Core.XRFramework.Physics
 
         private void Awake()
         {
+            PhysicsMover = new PhysicsMover(physicsConfiguration, PhysicsRigidbody);
             PhysicsRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
             PhysicsRigidbody.mass = Mass;
             ResetCentreOfMass();
@@ -76,7 +76,7 @@ namespace Core.XRFramework.Physics
             }
             PhysicsRigidbody.linearVelocity = Vector3.zero;
             PhysicsRigidbody.angularVelocity = Vector3.zero;
-            PhysicsMover.Reset();
+            //PhysicsMover.Reset();
         }
 
         public IDisposable OverridePhysics()
@@ -93,7 +93,7 @@ namespace Core.XRFramework.Physics
 
         public void Match(Vector3 position, Quaternion rotation)
         {
-            PhysicsMover.MatchTransform(position, rotation.normalized, this);
+            PhysicsMover.MatchTransform(position, rotation);
         }
 
         public void SetPosition (Vector3 position)

@@ -298,7 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3558997759
+  GlobalObjectIdHash: 3861537435
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -1309,10 +1309,6 @@ PrefabInstance:
       propertyPath: handController
       value: 
       objectReference: {fileID: 85078385258468307}
-    - target: {fileID: 530002100994725776, guid: cb4bd5d8f6781ae4596869576d837e14, type: 3}
-      propertyPath: synchedTransform
-      value: 
-      objectReference: {fileID: 2002157845090341823}
     - target: {fileID: 5563570574755268802, guid: cb4bd5d8f6781ae4596869576d837e14, type: 3}
       propertyPath: m_Name
       value: PhysicsHand_Right
@@ -1442,10 +1438,6 @@ PrefabInstance:
       propertyPath: handController
       value: 
       objectReference: {fileID: 8889691577466181057}
-    - target: {fileID: 8291266144818668198, guid: b0f39ec8d4a26f14bab5b05f4613557f, type: 3}
-      propertyPath: synchedTransform
-      value: 
-      objectReference: {fileID: 933756021787854229}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

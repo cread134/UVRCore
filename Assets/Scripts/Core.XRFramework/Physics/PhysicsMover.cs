@@ -29,7 +29,6 @@ namespace Core.XRFramework.Physics
         {
             PhysicsMatchRotation(rotation);
             PhysicsMatchPosition(position);
-            Debug.Log("MatchTransform to " + position + "rot: " + rotation);
         }
 
         public void MatchTransform(Vector3 position, Quaternion rotation, PhysicsObject physicsObject)

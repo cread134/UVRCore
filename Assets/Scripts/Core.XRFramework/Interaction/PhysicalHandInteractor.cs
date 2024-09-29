@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Core.XRFramework.Interaction
 {
-    [SelectionBase, RequireComponent(typeof(Rigidbody))]
+    [SelectionBase, RequireComponent(typeof(Rigidbody)), RequireComponent(typeof(PhysicsObject))]
     public class PhysicalHandInteractor : NetworkBehaviour, ISpawnable
     {
         [SerializeField] HandType handType;
@@ -22,6 +22,8 @@ namespace Core.XRFramework.Interaction
         [SerializeField] GrabInteractionIcon grabIndicator;
         [SerializeField] Transform interactionPoint;
         [SerializeField] CommonPhysicsInteractorConfig interactionConfiguration;
+
+        PhysicsObject _physicsObject;
 
         GameObject[] LayerObjects
         {
@@ -56,6 +58,7 @@ namespace Core.XRFramework.Interaction
             _camera = _xrContext.GetCamera();
 
             _rigidbody = GetComponent<Rigidbody>();
+            _physicsObject = GetComponent<PhysicsObject>();
             _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
             _rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             _rigidbody.centerOfMass = Vector3.zero;
@@ -270,7 +273,7 @@ namespace Core.XRFramework.Interaction
         {
             if (!IsGrabbingObject)
             {
-                _physicsMover.MatchTransform(handController.transform);
+                _physicsObject.Match(handController.transform.position, handController.transform.rotation);
             }
         }
 
