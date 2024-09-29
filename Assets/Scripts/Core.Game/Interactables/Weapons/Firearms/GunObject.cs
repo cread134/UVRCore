@@ -20,9 +20,21 @@ namespace Core.Game.Interactables.Weapons.Firearms
         public ObjectInput ammunitionInput;
 
         bool shootInputDown = false;
+        float lastShootTime = 0;
+
+        IAmmunitionSource ammunitionSource;
+
         private void Awake()
         {
             physicsObject = GetComponent<PhysicsObject>();
+        }
+
+        private void Update()
+        {
+            if (shootInputDown)
+            {
+                TryShoot();
+            }
         }
 
         public void ShootInput(HandType handType, GrabPoint grabPoint)
@@ -34,12 +46,42 @@ namespace Core.Game.Interactables.Weapons.Firearms
                 return;
 
             shootInputDown = true;
-            Shoot();
+            TryShoot();
         }
 
         public void ShootInputUp(HandType handType, GrabPoint grabPoint)
         {
             shootInputDown = false;
+        }
+
+        bool TryShoot()
+        {
+            if (CanShoot())
+            {
+                Shoot();
+                return true;
+            }
+            return false;
+        }
+
+        bool CanShoot()
+        {
+            if (Time.time - lastShootTime < gunConfiguration.FireRate)
+            {
+                return false;
+            }
+
+            if (ammunitionSource == null)
+            {
+                return false;
+            }
+
+            if (!ammunitionSource.Peek())
+            {
+                return false;
+            }
+
+            return true;
         }
 
         void Shoot()
@@ -63,6 +105,21 @@ namespace Core.Game.Interactables.Weapons.Firearms
             {
                 ammunitionInput.ReleaseInput();
             }
+            OnUnloadAmmunitionSource();
+        }
+
+        public void OnLoadAmmunitionSource(IAmmunitionSource ammunitionSource)
+        {
+            if (ammunitionSource != null)
+            {
+                Debug.LogError("Cannot load ammunition when it is already loaded");
+            }
+            this.ammunitionSource = ammunitionSource;
+        }
+
+        public void OnUnloadAmmunitionSource()
+        {
+            this.ammunitionSource = null;
         }
 
         #region Debug

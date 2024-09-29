@@ -93,7 +93,7 @@ namespace Core.XRFramework.Physics
 
         public void Match(Vector3 position, Quaternion rotation)
         {
-            PhysicsMover.MatchTransform(position, rotation);
+            PhysicsMover.MatchTransform(position, rotation.normalized, this);
         }
 
         public void SetPosition (Vector3 position)
