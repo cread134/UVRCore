@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: DefaultObjectPhysicsConfig
   m_EditorClassIdentifier: 
   maxAngularVelocity: 20
-  torqueSmoothing: 7
+  torqueSmoothing: 6
   rotationalMultiplier: 0.3

@@ -40,7 +40,8 @@ namespace Core.XRFramework.Interaction.WorldObject
         }
 
         #region Debug
-        private void OnDrawGizmosSelected()
+
+        public void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireCube(transform.position, SocketDimension);

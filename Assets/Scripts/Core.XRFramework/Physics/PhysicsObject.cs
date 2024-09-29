@@ -56,7 +56,7 @@ namespace Core.XRFramework.Physics
         {
             var offset = CentreOfMass - PhysicsRigidbody.position;
             PhysicsRigidbody.centerOfMass = offset;
-            PhysicsMover.Reset();
+            //PhysicsMover.Reset();
         }
         #endregion
 

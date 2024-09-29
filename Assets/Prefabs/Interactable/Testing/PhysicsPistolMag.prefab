@@ -79,8 +79,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 323078099
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 4206572127
+  InScenePlacedSourceGlobalObjectIdHash: 323078099
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -375,6 +375,7 @@ MonoBehaviour:
   inputRadius: 0.01
   inputColliders:
   - {fileID: 8139371821249510540}
+  _inputKey: {fileID: 11400000, guid: f99bedc213169f942ba6247e6e4131ab, type: 2}
 --- !u!1 &7760795942521833233
 GameObject:
   m_ObjectHideFlags: 0

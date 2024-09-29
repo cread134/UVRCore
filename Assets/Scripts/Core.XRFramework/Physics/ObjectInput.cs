@@ -4,10 +4,11 @@ using Core.Service.Physics;
 using Core.XRFramework.Interaction.WorldObject;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 namespace Core.XRFramework.Physics
 {
-
+    [SelectionBase]
     public class ObjectInput : MonoBehaviour, IGrabOverrider
     {
         [Header("Input Settings")]
@@ -36,6 +37,9 @@ namespace Core.XRFramework.Physics
         [SerializeField] private bool bindOnComplete = true;
         [SerializeField] private bool releaseOnComplete = true;
         [SerializeField] private GrabPoint[] disableOnBindGrabPoints = new GrabPoint[0];
+
+        [Header("Blocking")]
+        [SerializeField] private InputKey inputKey;
 
         private float startInputBuffer;
 
@@ -102,6 +106,18 @@ namespace Core.XRFramework.Physics
 
             if (subscriber.IsConnected)
             {
+                return false;
+            }
+
+            if (subscriber.InputKey != null)
+            {
+                if (inputKey != null)
+                {
+                    if (!subscriber.InputKey.key.Equals(inputKey.key, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                }
                 return false;
             }
 
@@ -289,6 +305,8 @@ namespace Core.XRFramework.Physics
                 {
                     Gizmos.DrawLine(inputPoint.position, endPoint.position);
                 }
+
+                Gizmos.DrawIcon(inputPoint.position, "emptygizmo.png", true);
             }
         }
         #endregion

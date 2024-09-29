@@ -10,6 +10,9 @@ namespace Core.XRFramework.Physics
     {
         [SerializeField] private float inputRadius = 0.01f;
         [SerializeField] private List<Collider> inputColliders;
+        [SerializeField] private InputKey _inputKey;
+        public InputKey InputKey => _inputKey;
+
 
         LazyParent<GrabbableObject> attachedGrab;
         bool _isConnected;

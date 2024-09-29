@@ -34,6 +34,7 @@ namespace Core.XRFramework.Physics
         {
             PhysicsMatchRotationWithObject(rotation, physicsObject);
             PhysicsMatchPositionWithObject(position, physicsObject);
+            Debug.Log("MatchTransform to " + position + "rot: " + rotation);
         }
 
         #region position
