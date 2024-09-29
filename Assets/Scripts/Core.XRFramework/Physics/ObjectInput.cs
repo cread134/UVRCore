@@ -11,6 +11,9 @@ namespace Core.XRFramework.Physics
     [SelectionBase]
     public class ObjectInput : MonoBehaviour, IGrabOverrider
     {
+        [Header("Construction Settings")]
+        public IObjectInputSubscriber startSubscriber;
+
         [Header("Input Settings")]
         public GrabbableObject ParentGrab;
 
@@ -46,6 +49,16 @@ namespace Core.XRFramework.Physics
         IObjectInputSubscriber _subscriber;
 
         LazyService<ILoggingService> loggingService = new();
+
+        private void Start()
+        {
+            if (startSubscriber != null)
+            {
+                _subscriber = startSubscriber;
+                SetInput(startSubscriber);
+                OnCompleteInput();
+            }
+        }
 
         void Update()
         {
@@ -90,9 +103,19 @@ namespace Core.XRFramework.Physics
             var rayHits = UnityEngine.Physics.SphereCastNonAlloc(inputPoint.position, inputRadius, inputPoint.forward, inputHits, 0.01f, inputMask.LayerMask, QueryTriggerInteraction.Collide);
             if (rayHits > 0)
             {
-                if (inputHits[0].transform.gameObject.TryGetComponent(out IObjectInputSubscriber subscriber) && IsValidInput(subscriber))
+                for (int i = 0; i < rayHits; i++)
                 {
-                    SetInput(subscriber);
+                    if (inputHits[i].transform.gameObject.TryGetComponent(out IObjectInputSubscriber subscriber))
+                    {
+                        if (!IsValidInput(subscriber))
+                        {
+                            Debug.DrawLine(inputPoint.position, inputHits[i].point, Color.red);
+                            return;
+                        }
+                        Debug.DrawLine(inputPoint.position, inputHits[i].point, Color.green);
+                        SetInput(subscriber);
+                        return;
+                    }
                 }
             }
         }

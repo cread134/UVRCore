@@ -11,8 +11,6 @@ namespace Core.Game.Interactables.Weapons.Firearms
     [RequireComponent(typeof(PhysicsObject))]
     public class GunObject : MonoBehaviour
     {
-        PhysicsObject physicsObject;
-
         [Header("Instance settings")]
         public GunConfiguration gunConfiguration;
         public Transform barrelReference;
@@ -23,10 +21,11 @@ namespace Core.Game.Interactables.Weapons.Firearms
         float lastShootTime = 0;
 
         IAmmunitionSource ammunitionSource;
+        IAmmunitionSource weaponChamber;
 
         private void Awake()
         {
-            physicsObject = GetComponent<PhysicsObject>();
+            weaponChamber = new WeaponChamber();
         }
 
         private void Update()
@@ -86,6 +85,7 @@ namespace Core.Game.Interactables.Weapons.Firearms
 
         void Shoot()
         {
+            lastShootTime = Time.time;
             Debug.Log("Gun shoot performed", this);
             DoRecoil();
             PlayShootSound();
@@ -117,7 +117,7 @@ namespace Core.Game.Interactables.Weapons.Firearms
             this.ammunitionSource = ammunitionSource;
         }
 
-        public void OnUnloadAmmunitionSource()
+        void OnUnloadAmmunitionSource()
         {
             this.ammunitionSource = null;
         }

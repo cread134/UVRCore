@@ -21,7 +21,7 @@ namespace Core.XRFramework.Interaction.WorldObject
         bool TryGetGrab(HandType handType, Vector3 referencePosition, Vector3 referenceUp, Quaternion referenceRotation, out Vector3 newPosition, out Quaternion newRotation);
         void GetGrabHandPosition(HandType handType, out Vector3 newPosition, out Quaternion newRotation);
         void UpdateCachedValues(HandType handType, Vector3 targetPosition, Vector3 upDirection, Quaternion targetRotation);
-        void UpdateTransformState(HandType handType);
+        (Vector3 newPositionTarget, Quaternion newRotationTarget) UpdateTransformState(HandType handType);
         void SetOverride(IGrabOverrider grabOverride, bool disableCollision = false);
         void ReleaseOverride();
         void DoRelease();

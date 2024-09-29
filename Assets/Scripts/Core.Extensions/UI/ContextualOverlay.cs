@@ -21,8 +21,6 @@ namespace Core.DevTools.Scripting
         public override VisualElement CreatePanelContent()
         {
             var root = new VisualElement { name = "ObjectControls" };
-            var header = new Label($"{typeof(T).Name}Overlay");
-            root.Add(header);
             var selectedGameObject = Selection.activeGameObject;
             if (selectedGameObject != null && selectedGameObject.TryGetComponent(out T go))
             {

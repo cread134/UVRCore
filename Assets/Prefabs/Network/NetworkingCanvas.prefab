@@ -553,13 +553,14 @@ GameObject:
   - component: {fileID: 7070558643703059}
   - component: {fileID: 2613832492399037374}
   - component: {fileID: 6013847468702535616}
+  - component: {fileID: 3360907681974362681}
   m_Layer: 5
   m_Name: NetworkingCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6235585753838249326
 RectTransform:
   m_ObjectHideFlags: 0
@@ -645,6 +646,14 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!81 &3360907681974362681
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3517906254313234562}
+  m_Enabled: 1
 --- !u!1 &7290232636306461018
 GameObject:
   m_ObjectHideFlags: 0

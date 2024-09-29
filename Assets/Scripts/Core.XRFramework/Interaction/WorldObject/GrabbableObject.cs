@@ -13,7 +13,6 @@ namespace Core.XRFramework.Interaction.WorldObject
 {
     [SelectionBase]
     [RequireComponent(typeof(PhysicsObject))]
-    [RequireComponent(typeof(NetworkObject))]
     public class GrabbableObject : MonoBehaviour, IGrabbableObject, IInputSubscriber
     {
         #region Networking
@@ -30,11 +29,17 @@ namespace Core.XRFramework.Interaction.WorldObject
             //change ownership
             if (value)
             {
-                GetComponent<NetworkObject>().ChangeOwnership(id);
+                if (gameObject.TryGetComponent(out NetworkObject networkObject))
+                {
+                    networkObject.ChangeOwnership(id);
+                }
             } 
             else
             {
-                GetComponent<NetworkObject>().ChangeOwnership(0);
+                if (gameObject.TryGetComponent(out NetworkObject networkObject))
+                {
+                    networkObject.ChangeOwnership(0);
+                }
             }
         }
 
@@ -125,15 +130,15 @@ namespace Core.XRFramework.Interaction.WorldObject
             newRotation = getTransform.Rotation;
         }
 
-        public void UpdateTransformState(HandType handType)
+        public (Vector3 newPositionTarget, Quaternion newRotationTarget) UpdateTransformState(HandType handType)
         {
             if (!storedHandInformation[handType].IsGrabbing)
             {
-                return;
+                return (Vector3.zero, Quaternion.identity);
             }
             if (handType != _primaryGrabType && IsTwoHanded)
             {
-                return;
+                return (Vector3.zero, Quaternion.identity);
             }
 
             var cachedInformation = storedHandInformation[handType];
@@ -164,6 +169,7 @@ namespace Core.XRFramework.Interaction.WorldObject
             }
 
             PhysicsObject.Match(calculatedTargetPosition, calculatedRotation);
+            return (calculatedTargetPosition, calculatedRotation);
         }
 
         #region override
@@ -293,6 +299,7 @@ namespace Core.XRFramework.Interaction.WorldObject
                 _physicsObject.PhysicsRigidbody.centerOfMass = storedHandInformation[oppositeType].GetGrabTransform().Position - _physicsObject.PhysicsRigidbody.position;
             }
             _physicsObject.PhysicsRigidbody.useGravity = true;
+            _physicsObject.IsKinematic = false;
             storedHandInformation[handType].IsGrabbing = false;
             _physicsObject.ResetCentreOfMass();
 

@@ -727,7 +727,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 187125685289675979, guid: 59ddfdc561a321a49bc29d6c7556153f, type: 3}
       propertyPath: springConstant
-      value: 3
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 187125685289675979, guid: 59ddfdc561a321a49bc29d6c7556153f, type: 3}
       propertyPath: 'movingComponents.Array.data[0]'

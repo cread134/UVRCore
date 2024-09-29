@@ -3,14 +3,6 @@ using UnityEngine;
 
 namespace Core.Game.Interactables.Weapons.Firearms
 {
-    public interface IAmmunitionSource
-    {
-        public AmmoGroupConfiguration Configuration { get; }
-        public bool Take();
-        public bool Peek();
-    }
-
-
     public class AmmoGroup : MonoBehaviour, IAmmunitionSource
     {
         public AmmoGroupConfiguration Configuration;
@@ -39,6 +31,17 @@ namespace Core.Game.Interactables.Weapons.Firearms
         {
             return Quantity > 0;
         }
+
+        public bool Put()
+        {
+            if (Quantity < Configuration.MaxQuantity)
+            {
+                Quantity++;
+                return true;
+            }
+            return false;
+        }
+
 
         #region Debug
         private void OnDrawGizmos()

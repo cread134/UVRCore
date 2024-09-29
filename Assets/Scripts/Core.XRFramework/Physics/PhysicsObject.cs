@@ -10,7 +10,7 @@ namespace Core.XRFramework.Physics
 {
     [SelectionBase]
     [RequireComponent(typeof(Rigidbody))]
-    public class PhysicsObject : NetworkBehaviour
+    public class PhysicsObject : MonoBehaviour
     {
         Rigidbody _rigidbody;
         public Rigidbody PhysicsRigidbody => _rigidbody ??= GetComponent<Rigidbody>();
@@ -88,12 +88,12 @@ namespace Core.XRFramework.Physics
 
         public void Match(Transform targetTransform)
         {
-            PhysicsMover.MatchTransform(targetTransform);
+            Match(targetTransform.position, targetTransform.rotation);
         }
 
         public void Match(Vector3 position, Quaternion rotation)
         {
-            PhysicsMover.MatchTransform(position, rotation);
+            PhysicsMover.MatchTransform(position, rotation, this);
         }
 
         public void SetPosition (Vector3 position)
@@ -138,6 +138,8 @@ namespace Core.XRFramework.Physics
         #endregion
 
         #region Binding
+        
+        public IEnumerable<IBinding> ActiveBindings => _bindings.Values;
 
         Dictionary<GameObject, IBinding> _bindings = new Dictionary<GameObject, IBinding>();
 
@@ -183,6 +185,15 @@ namespace Core.XRFramework.Physics
                 _bindings.Remove(bindingTarget.gameObject);
                 Debug.Log($"Releasing {bindingTarget} from {this}");
             }
+        }
+
+        public void ReleaseBindings()
+        {
+            foreach (var binding in _bindings.Values)
+            {
+                binding.Break();
+            }
+            _bindings.Clear();
         }
 
         #endregion

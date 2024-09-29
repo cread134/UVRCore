@@ -101,19 +101,6 @@ namespace Core.XRFramework.Interaction
             UpdateHandTransform();
         }
 
-        private void LateUpdate()
-        {
-            if (!hasSpawned || !IsOwner)
-            {
-                return;
-            }
-            if (!IsOwner)
-            {
-                return;
-            }
-            UpdateHandTransformLate();
-        }
-
         #endregion
 
         #region grabbing
@@ -274,12 +261,8 @@ namespace Core.XRFramework.Interaction
             if (!IsGrabbingObject)
             {
                 _physicsObject.Match(handController.transform.position, handController.transform.rotation);
-            }
-        }
-
-        void UpdateHandTransformLate()
-        {
-            if (IsGrabbingObject)
+            } 
+            else
             {
                 UpdateHeldObjectTransform();
             }
@@ -288,10 +271,10 @@ namespace Core.XRFramework.Interaction
         private void UpdateHeldObjectTransform()
         {
             grabbedObject.UpdateCachedValues(handType, handController.transform.position, handController.transform.up, handController.transform.rotation);
-            grabbedObject.UpdateTransformState(handType);
+            _ = grabbedObject.UpdateTransformState(handType);
             grabbedObject.GetGrabHandPosition(handType, out var newPosition, out var newRotation);
-            _rigidbody.MovePosition(newPosition);
-            _rigidbody.MoveRotation(newRotation);
+            _rigidbody.position = newPosition;
+            _rigidbody.rotation = newRotation;
         }
         #endregion
 
