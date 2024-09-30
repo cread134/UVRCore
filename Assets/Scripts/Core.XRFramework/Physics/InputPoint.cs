@@ -15,7 +15,7 @@ namespace Core.XRFramework.Physics
 
 
         LazyParent<GrabbableObject> attachedGrab;
-        bool _isConnected;
+        bool _isConnected = false;
 
         public bool IsConnected => _isConnected;
         public IGrabbableObject AttachedGrab => attachedGrab.Value;

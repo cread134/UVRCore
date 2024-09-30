@@ -134,34 +134,35 @@ namespace Core.XRFramework.Physics
 
             if (subscriber.InputKey != null)
             {
-                if (inputKey != null)
+                if (inputKey != null && !subscriber.InputKey.key.Equals(inputKey.key, System.StringComparison.OrdinalIgnoreCase))
                 {
-                    if (!subscriber.InputKey.key.Equals(inputKey.key, System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        return false;
-                    }
+                    Debug.Log($"Input key {subscriber.InputKey.key} != {inputKey.key}");
+                    return false;
                 }
-                return false;
             }
 
             var distance = Vector3.Distance(subscriber.InputReferencePoint.position, inputPoint.position);
             if (distance > inputDistance)
             {
+                Debug.Log($"Distance too far {distance}");
                 return false;
             }
 
             var sideAngle = Vector3.Angle(subscriber.InputReferencePoint.right, inputPoint.right);
             if (sideAngle > horizontalAngleAllowance)
             {
+                Debug.Log($"Side angle too much {sideAngle}");
                 return false;
             }
 
             var topAngle = Vector3.Angle(subscriber.InputReferencePoint.up, inputPoint.up);
             if (topAngle > verticalAngleAllowance)
             {
+                Debug.Log($"Top angle too much {topAngle}");
                 return false;
             }
 
+            Debug.Log($"Valid input");
             return true;
         }
 

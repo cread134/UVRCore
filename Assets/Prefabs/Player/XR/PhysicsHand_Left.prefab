@@ -10,8 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3916243088271912531}
   - component: {fileID: 8186140727221657313}
+  - component: {fileID: 2030595964114552705}
   - component: {fileID: 8291266144818668198}
   - component: {fileID: 3976748095585598929}
+  - component: {fileID: 5426176727095686591}
   m_Layer: 7
   m_Name: PhysicsHand_Left
   m_TagString: Untagged
@@ -65,6 +67,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2030595964114552705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230317214551800285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1502273061
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &8291266144818668198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,6 +121,18 @@ MonoBehaviour:
   physicsConfiguration: {fileID: 11400000, guid: 0cbb06f63052d2e45b05faf66c0a0474, type: 2}
   defaultCollisionSound: {fileID: 11400000, guid: aa990d8a05477ed48b292a921f0b2cdd, type: 2}
   centreOfMassOverride: {fileID: 0}
+--- !u!114 &5426176727095686591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230317214551800285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 564957402eb4f3541ada436f0891ae5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4450416296640651553
 GameObject:
   m_ObjectHideFlags: 0

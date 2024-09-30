@@ -89,6 +89,9 @@ namespace Core.XRFramework.Interaction
             if (!IsGrabbingObject)
             {
                 UpdateGrabHover();
+            } else
+            {
+                UpdateToCachedHandTargets();
             }
         }
 
@@ -272,6 +275,10 @@ namespace Core.XRFramework.Interaction
         {
             grabbedObject.UpdateCachedValues(handType, handController.transform.position, handController.transform.up, handController.transform.rotation);
             _ = grabbedObject.UpdateTransformState(handType);
+        }
+
+        void UpdateToCachedHandTargets()
+        {
             grabbedObject.GetGrabHandPosition(handType, out var newPosition, out var newRotation);
             _rigidbody.position = newPosition;
             _rigidbody.rotation = newRotation;

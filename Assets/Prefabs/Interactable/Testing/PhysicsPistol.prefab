@@ -219,7 +219,7 @@ MonoBehaviour:
   ParentGrab: {fileID: 2823589518609462518}
   inputPoint: {fileID: 1566078288818441159}
   endPoint: {fileID: 1463780734974643602}
-  inputRadius: 0.02
+  inputRadius: 0.01
   inputDistance: 0.01
   inputMask: {fileID: 11400000, guid: 8f6cf40e655a75b43a9f7bee65c5e2a0, type: 2}
   verticalAngleAllowance: 25
@@ -549,6 +549,7 @@ GameObject:
   - component: {fileID: 7690183491912039494}
   - component: {fileID: 94209541648689392}
   - component: {fileID: 4202381083726305554}
+  - component: {fileID: 1381019046141189867}
   m_Layer: 9
   m_Name: PhysicsPistol
   m_TagString: Untagged
@@ -713,6 +714,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1381019046141189867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9107667270700972468}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60542b85ee22ff8498e7f69d0d861a6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  physicsObject: {fileID: 6441129702224423166}
+  targetTransform: {fileID: 0}
 --- !u!1001 &1886828874197889889
 PrefabInstance:
   m_ObjectHideFlags: 0
